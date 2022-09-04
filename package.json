@@ -1,0 +1,20 @@
+{
+    "name": "rogerstringer",
+    "private": true,
+    "version": "0.0.0",
+    "scripts": {
+      "dev": "run-p dev:*",
+      "dev:directus": "yarn --cwd directus start",
+      "dev:app": "wait-on http://localhost:6055/admin && yarn --cwd app dev",
+      "build": "run-p build:*",
+      "abuild:directus": "yarn --cwd api build",
+      "build:app": "yarn --cwd app build",
+      "setup": "yarn && yarn --cwd directus && yarn --cwd app"
+    },
+    "devDependencies": {
+      "concurrently": "^7.2.1",
+      "cross-env": "7.0.3",
+      "npm-run-all": "4.1.5",
+      "wait-on": "5.2.1"
+    }
+  }
