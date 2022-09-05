@@ -9,7 +9,9 @@
       "build": "run-p build:*",
       "abuild:directus": "yarn --cwd api build",
       "build:app": "yarn --cwd app build",
-      "setup": "yarn && yarn --cwd directus && yarn --cwd app"
+      "setup": "yarn && yarn --cwd directus && yarn --cwd app",
+      "setup:directus": "npx create-directus-project Directus",
+      "start:directus": "cd Directus && npx directus start"        
     },
     "devDependencies": {
       "concurrently": "^7.2.1",
