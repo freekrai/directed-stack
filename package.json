@@ -1,22 +1,31 @@
 {
-    "name": "rogerstringer",
-    "private": true,
-    "version": "0.0.0",
-    "scripts": {
-      "dev": "run-p dev:*",
-      "dev:directus": "yarn --cwd directus start",
-      "dev:app": "wait-on http://localhost:6055/admin && yarn --cwd app dev",
-      "build": "run-p build:*",
-      "abuild:directus": "yarn --cwd api build",
-      "build:app": "yarn --cwd app build",
-      "setup": "yarn && yarn --cwd directus && yarn --cwd app",
-      "setup:directus": "npx create-directus-project Directus",
-      "start:directus": "cd Directus && npx directus start"        
-    },
-    "devDependencies": {
-      "concurrently": "^7.2.1",
-      "cross-env": "7.0.3",
-      "npm-run-all": "4.1.5",
-      "wait-on": "5.2.1"
-    }
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "build": "remix build",
+    "dev": "remix dev",
+    "setup:directus": "npx create-directus-project directus",
+    "start:directus": "cd Directus && npx directus start"
+  },
+  "dependencies": {
+    "@remix-run/node": "^1.7.0",
+    "@remix-run/react": "^1.7.0",
+    "@remix-run/vercel": "^1.7.0",
+    "@vercel/node": "^2.4.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.7.0",
+    "@remix-run/eslint-config": "^1.7.0",
+    "@remix-run/serve": "^1.7.0",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "eslint": "^8.20.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.7.4"
+  },
+  "engines": {
+    "node": ">=14"
   }
+}
