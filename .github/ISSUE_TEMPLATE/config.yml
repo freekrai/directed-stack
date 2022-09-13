@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: Get Help with This Stack
-    url: https://github.com/freekrai/remix-blog/discussions/new?category=q-a
+    url: https://github.com/freekrai/directed-stack/discussions/new?category=q-a
     about:
       Help with this stack itself. 
   - name: Feature Request for This Stack
-    url: https://github.com/freekrai/remix-blog/discussions/new?category=ideas
+    url: https://github.com/freekrai/directed-stack/discussions/new?category=ideas
     about:
       I appreciate you taking the time to improve Remix Blog with your ideas, but let's
       use the Discussions for this instead of the issues tab 🙂.

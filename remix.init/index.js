@@ -99,7 +99,7 @@ const main = async ({ isTypeScript, packageManager, rootDirectory }) => {
     "workflows",
     "deploy.yml"
   );
-  const REPLACER = "remix-blog-template";
+  const REPLACER = "directed-stack-template";
 
   const DIR_NAME = path.basename(rootDirectory);
   const SUFFIX = getRandomString(2);
