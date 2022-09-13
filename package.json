@@ -1,4 +1,5 @@
 {
+  "name": "directed-stack-template",
   "private": true,
   "sideEffects": false,
   "scripts": {
