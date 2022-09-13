@@ -1,0 +1,57 @@
+{
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "clean": "rimraf ./node_modules/.cache ./api ./build ./public/build \"./app/styles/**/*.css\"",
+    "new:prebuild": "npm run clean && echo All clean ✨",
+    "build": "run-s build:*",
+    "build:css": "tailwindcss -m -i ./styles/global.css -o app/styles/global.css",
+    "build:remix": "remix build",
+    "dev": "run-p dev:*",
+    "dev:css": "tailwindcss -w -i ./styles/global.css -o app/styles/global.css",
+    "dev:remix": "remix dev",
+    "setup": "yarn && yarn --cwd directus",
+    "start:directus": "cd directus && npx directus start"
+  },
+  "dependencies": {
+    "@directus/sdk": "^10.1.4",
+    "@headlessui/react": "^1.7.0",
+    "@markdoc/markdoc": "^0.1.7",
+    "@remix-run/node": "^1.7.0",
+    "@remix-run/react": "^1.7.0",
+    "@remix-run/vercel": "^1.7.0",
+    "@vercel/node": "^2.4.4",
+    "classnames": "^2.3.1",
+    "date-fns": "^2.29.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remix-seo": "^0.1.0",
+    "remix-utils": "^3.3.0",
+    "tiny-invariant": "^1.2.0",
+    "zod": "^3.19.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.7.0",
+    "@remix-run/eslint-config": "^1.7.0",
+    "@remix-run/serve": "^1.7.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/line-clamp": "^0.4.2",
+    "@tailwindcss/typography": "^0.5.7",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "autoprefixer": "^10.4.8",
+    "daisyui": "^2.27.0",
+    "eslint": "^8.20.0",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.16",
+    "reading-time": "^1.5.0",
+    "rimraff": "^0.0.1-security",
+    "tailwindcss": "^3.1.8",
+    "typescript": "^4.7.4",
+    "wait-on": "^6.0.1"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
