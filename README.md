@@ -28,7 +28,7 @@ Click this button to create a [Gitpod](https://gitpod.io) workspace with the pro
 
 ## Development
 
-This repo contains two projects:
+This repo contains two folders plus the root:
 
 - `directus`: our Directus headless CMS
 - `scripts`: our Directus schema
