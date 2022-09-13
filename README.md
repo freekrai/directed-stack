@@ -31,6 +31,7 @@ Click this button to create a [Gitpod](https://gitpod.io) workspace with the pro
 This repo contains two projects:
 
 - `directus`: our Directus headless CMS
+- `scripts`: our Directus schema
 - `/`: our Remix app
 
 ## First run
