@@ -42,6 +42,7 @@
     "@types/react-dom": "^18.0.6",
     "autoprefixer": "^10.4.8",
     "daisyui": "^2.27.0",
+    "directus-schema-builder-kit": "https://github.com/freekrai/directus-schema-builder-kit",
     "eslint": "^8.20.0",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.16",
