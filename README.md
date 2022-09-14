@@ -55,9 +55,17 @@ npx directus bootstrap
 
 ### Railway
 
-You can deploy Directus to railway by clicking:
+This app uses a [slugs](https://github.com/dimitrov-adrian/directus-extension-wpslug-interface) extension that you want pre-installed, you can use my [Directus Railway](https://github.com/freekrai/directus-railway) repo to get started on Railway, to deploy Directus to railway, click:
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/_dszdt?referralCode=codedgeekery)
+
+You can find more info on this repo [here](https://codedgeekery.com/blog/directus-railway).
+
+### Fly.io
+
+If you're prefer to install Directus on [Fly.io](http://fly.io), you can follow this [repo](https://github.com/freekrai/directus-fly) repo instead.
+
+I like to give options.
 
 Once deploy, save `.env.example` to `.env`, and save the required info then run:
 
