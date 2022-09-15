@@ -17,6 +17,7 @@
   "dependencies": {
     "@directus/sdk": "^10.1.4",
     "@headlessui/react": "^1.7.0",
+    "@heroicons/react": "^2.0.11",
     "@markdoc/markdoc": "^0.1.7",
     "@remix-run/node": "^1.7.0",
     "@remix-run/react": "^1.7.0",
@@ -24,6 +25,7 @@
     "@vercel/node": "^2.4.4",
     "classnames": "^2.3.1",
     "date-fns": "^2.29.2",
+    "prism-react-renderer": "^1.3.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remix-seo": "^0.1.0",

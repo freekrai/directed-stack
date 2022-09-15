@@ -12,7 +12,7 @@ import { useLoaderData } from "@remix-run/react";
 
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
-
+import { CacheControl } from "~/utils/cache-control.server";
 import { getDirectusClient, getAssetURL } from '~/services/directus.server'
 import { getSeoMeta, getSeoLinks } from "~/seo";
 
@@ -50,7 +50,14 @@ export async function loader({ request, context, params }: LoaderArgs) {
 			readTime: readTime,
 		};
 
-		return json({ body, meta });
+		return json({ 
+			body,
+			meta
+		}, {
+			headers: {
+				"Cache-Control": new CacheControl("swr").toString() 
+			},
+		});    
 	} catch {
 		return redirect("/blog");
 	}
