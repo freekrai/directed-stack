@@ -111,9 +111,14 @@ We also need to create a `users` user role, which has permissions to:
 
 Take note of this role's ID as you'll need it when you deploy the remix app
 
-Also edit the `public` role: 
-   - directus_files
-     - view: all access
+As for images, one recommended approach is to create a folder inside files called `public` or `posts`, make note of the ID then go into roles & permissions, edit the `public` role, 
+
+- directus_files
+  - view: where `Folder` equals `ID` of folder you created
+     - Then select just the ID field
+  
+This way, only images inside the `posts` or `public` folder is available publicly.
+
 
 ### Vercel
 
