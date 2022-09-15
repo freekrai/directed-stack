@@ -116,24 +116,19 @@ export default function AppWithProviders() {
 }
 
 export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
-  console.log(error);
   return (
-    <Document title="Error!">
+    <ErrorDocument title="Error!">
       <ErrorPage 
         code={500}
         title={`There was an error`} 
         message={error.message} 
       />
-    </Document>
+    </ErrorDocument>
   );
 }
 
-// https://remix.run/docs/en/v1/api/conventions#catchboundary
 export function CatchBoundary() {
   let caught = useCatch();
-
-  console.log(caught);
 
   let message;
   switch (caught.status) {
@@ -155,13 +150,13 @@ export function CatchBoundary() {
       throw new Error(caught.data || caught.statusText);
   }
   return (
-    <Document title={`${caught.status} ${caught.statusText}`}>
+    <ErrorDocument title={`${caught.status} ${caught.statusText}`}>
       <ErrorPage code={caught.status} title={`${caught.status}: ${caught.statusText}`} message={message} />
-    </Document>
+    </ErrorDocument>
   );
 }
 
-function Document({
+function ErrorDocument({
   children,
   title
 }: {
