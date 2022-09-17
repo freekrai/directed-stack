@@ -85,18 +85,18 @@ You can find more info on this repo [here](https://codedgeekery.com/blog/directu
 
 ### Fly.io
 
-If you're prefer to install Directus on [Fly.io](http://fly.io), you can follow this [repo](https://github.com/freekrai/directus-fly) repo instead.
+If you're prefer to install Directus on [Fly.io](http://fly.io), you can follow this [repo](https://github.com/freekrai/directus-fly) instead.
 
-I like to give options.
+### Migrate Schema
 
-Once deploy, save `.env.example` to `.env`, and save the required info then run:
+Once deployed, save `.env.example` to `.env`, and save the required info then run the following to to create the necessary collections:
 
 ```bash
 cd scripts
 node schema.mjs
 ```
 
-to create the necessary collections.
+### Users & Permissions
 
 We also need to create a `users` user role, which has permissions to:
 
@@ -119,7 +119,8 @@ As for images, one recommended approach is to create a folder inside files calle
   
 This way, only images inside the `posts` or `public` folder is available publicly.
 
+_If you don't want to deal with folders, then you can make all `directus_files` publically viewable, the choice is yours.
 
-### Vercel
+### Deploying the Remix app to Vercel
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffreekrai%2Fdirected-stack&env=SESSION_SECRET,DIRECTUS_URL,DIRECTUS_STATIC_TOKEN,DIRECTUS_USER_ROLE)
