@@ -2831,12 +2831,6 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-"directus-schema-builder-kit@https://github.com/freekrai/directus-schema-builder-kit":
-  version "0.1.0"
-  resolved "https://github.com/freekrai/directus-schema-builder-kit#5cd0f2e0fa1fad4e4c52e39493fc90e6b8333b7f"
-  dependencies:
-    axios "^0.24.0"
-
 dlv@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/dlv/-/dlv-1.1.3.tgz#5c198a8a11453596e751494d49874bc7732f2e79"
@@ -5631,6 +5625,13 @@ neo-async@^2.5.0:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.2.tgz#b4aafb93e3aeb2d8174ca53cf163ab7d7308305f"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
+
+new-directus-schema-builder-kit@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/new-directus-schema-builder-kit/-/new-directus-schema-builder-kit-1.0.0.tgz#0212fb20d55795d5dd76e8a38324f75958d3bc41"
+  integrity sha512-uggsAqB/mYP0/sB5Scc8YbV0R1PPWKBB0FC5fH+bUgelzLGiKxRyFkkoe3SseZDM0qwUrw8T54NdtJJNvkujKw==
+  dependencies:
+    axios "^0.24.0"
 
 nice-try@^1.0.4:
   version "1.0.5"

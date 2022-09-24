@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 dotenv.config({ path: './.env' });
 
-import { build } from "directus-schema-builder-kit"
+import { build } from "new-directus-schema-builder-kit"
 
 const STATUS_INTERFACE_CHOICES = [
   { text: "$t:published", value: "published" },
