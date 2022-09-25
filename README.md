@@ -4,6 +4,8 @@
 
 Learn more about [Remix Stacks](https://remix.run/stacks).
 
+Follow this [tutorial](https://codedgeekery.com/blog/directed-stack) to get started with the Directed Stack, there's a more in-depth step by step guide coming shortly.
+
 ```
 npx create-remix --template freekrai/directed-stack
 ```
