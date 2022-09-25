@@ -4,8 +4,6 @@
 
 Learn more about [Remix Stacks](https://remix.run/stacks).
 
-Follow this [tutorial](https://codedgeekery.com/blog/directed-stack) to get started with the Directed Stack, there's a more in-depth step by step guide coming shortly.
-
 ```
 npx create-remix --template freekrai/directed-stack
 ```
@@ -24,6 +22,9 @@ npx create-remix --template freekrai/directed-stack
 Not a fan of bits of the stack? Fork it, change it, and use `npx create-remix --template your/repo`! Make it your own.
 
 ## Quickstart
+
+Follow this [tutorial](https://codedgeekery.com/blog/directed-stack) to get started with the Directed Stack, there's a more in-depth step by step guide coming shortly.
+
 
 Click this button to create a [Gitpod](https://gitpod.io) workspace with the project set up, Postgres started, and Fly pre-installed
 
