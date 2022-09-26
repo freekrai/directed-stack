@@ -112,6 +112,8 @@ We also need to create a `users` user role, which has permissions to:
    - view: all access, Directus handles the proper rules
    - edit: where `ID` equals `$CURRENT_USER`
 
+On the same page, there are checkboxes for app and admin, uncheck both of these if they are checked as this role will be through the api only. 
+
 Take note of this role's ID as you'll need it when you deploy the remix app
 
 As for images, one recommended approach is to create a folder inside files called `public` or `posts`, make note of the ID then go into roles & permissions, edit the `public` role, 
