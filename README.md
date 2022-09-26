@@ -90,6 +90,11 @@ You can find more info on this repo [here](https://codedgeekery.com/blog/directu
 
 If you're prefer to install Directus on [Fly.io](http://fly.io), you can follow this [repo](https://github.com/freekrai/directus-fly) instead.
 
+### Directus Cloud
+
+Directus also gives a terrific option of hosting via their [cloud service](https://directus.cloud), but you can’t use extensions on the free tier so the included schema would need to be changed so that the slug field is just a text field instead. 
+
+
 ### Migrate Schema
 
 Once deployed, save `.env.example` to `.env`, and save the required info then run the following to to create the necessary collections:
