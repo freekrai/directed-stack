@@ -129,7 +129,7 @@ As for images, one recommended approach is to create a folder inside files calle
   
 This way, only images inside the `posts` or `public` folder is available publicly.
 
-_If you don't want to deal with folders, then you can make all `directus_files` publically viewable, the choice is yours.
+_If you don't want to deal with folders, then you can make all `directus_files` publically viewable, the choice is yours._
 
 ### Deploying the Remix app to Vercel
 
