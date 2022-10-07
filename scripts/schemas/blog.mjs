@@ -48,7 +48,7 @@ const model = build((builder) => {
     .display("labels", { showAsDot: true, choices: STATUS_DISPLAY_CHOICES });
   categories.string("name", 60).notNullable().interface("input", { trim: true }).required();
   categories.string("slug").interface("extension-wpslug", { template: "{{name}}", prefix: "/categories/" }).required();
-//  categories.string("slug", 60).notNullable().unique().interface("input", { trim: true, slug: true }).required();
+//  categories.string("slug").notNullable().unique().interface("input", { trim: true, slug: true }).required();
   
   categories.image("image");
   categories.m2m("posts", { template: "{{post.title}}" });
