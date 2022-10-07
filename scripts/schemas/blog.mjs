@@ -48,7 +48,8 @@ const model = build((builder) => {
     .display("labels", { showAsDot: true, choices: STATUS_DISPLAY_CHOICES });
   categories.string("name", 60).notNullable().interface("input", { trim: true }).required();
   categories.string("slug").interface("extension-wpslug", { template: "{{name}}", prefix: "/categories/" }).required();
-
+//  categories.string("slug", 60).notNullable().unique().interface("input", { trim: true, slug: true }).required();
+  
   categories.image("image");
   categories.m2m("posts", { template: "{{post.title}}" });
 
@@ -67,6 +68,7 @@ const model = build((builder) => {
   posts.image("image");
   posts.string("title", 90).notNullable().interface("input", { trim: true }).required();
   posts.string("slug").interface("extension-wpslug", { template: "{{title}}", prefix: "/blog/" }).required();
+//  posts.string("slug").notNullable().unique().interface("input", { trim: true, slug: true }).required();
   posts.text("excerpt").notNullable().interface("input-multiline", { trim: true }).required();
   posts.text("body").notNullable().interface("input-rich-text-md");
   posts
