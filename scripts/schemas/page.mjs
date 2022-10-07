@@ -29,6 +29,7 @@ const model = build((builder) => {
     pages.string("title").notNullable().width("full").interface("input", { trim: true }).display("formatted-value", { bold: true }).required();
     pages.text("body").notNullable().interface("input-rich-text-md")
     pages.string("slug").interface("extension-wpslug", { template: "{{title}}", prefix: "/" }).required();
+    //  pages.string("slug").notNullable().unique().interface("input", { trim: true, slug: true }).required();
 });
 
 const baseURL = process.env.DIRECTUS_URL;
