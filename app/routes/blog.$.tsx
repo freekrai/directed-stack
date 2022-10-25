@@ -39,16 +39,7 @@ export async function loader({ request, context, params }: LoaderArgs) {
 
 		const readTime = calculateReadingTime(post.body);
         let body = parseMarkdown(post.body);
-
-		let photo = null;
-		if ( typeof post.image === 'object' ) { 
-			if ( post.image) {
-				photo = post.image.id ? getAssetURL(post.image.id) : null;
-			}
-		} else if (post.image) {
-			photo = post.image ? getAssetURL(post.image) : null;
-		}
-
+		const photo = post.image ? getAssetURL(post.image) : null;
 
 		let meta = {
 			title: post.title,

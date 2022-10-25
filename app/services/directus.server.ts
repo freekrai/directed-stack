@@ -21,7 +21,11 @@ export async function getDirectusClient() {
   return directus;
 }
 
-export function getAssetURL(id: any) {
+export function getAssetURL(image: any) {
+  let id = image;
+  if ( typeof image === 'object' ) { 
+    id = image.id;
+  }
   if (!id) return null;
   return `${env.DIRECTUS_URL}/assets/${id}`;
 }
