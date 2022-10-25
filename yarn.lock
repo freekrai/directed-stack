@@ -3082,14 +3082,14 @@
     "is-date-object" "^1.0.1"
     "is-symbol" "^1.0.2"
 
-"esbuild-darwin-64@0.14.47":
-  "integrity" "sha512-R6oaW0y5/u6Eccti/TS6c/2c1xYTb1izwK3gajJwi4vIfNs1s8B1dQzI1UiC9T61YovOQVuePDcfqHLT3mUZJA=="
-  "resolved" "https://registry.npmjs.org/esbuild-darwin-64/-/esbuild-darwin-64-0.14.47.tgz"
+"esbuild-darwin-arm64@0.14.47":
+  "integrity" "sha512-seCmearlQyvdvM/noz1L9+qblC5vcBrhUaOoLEDDoLInF/VQ9IkobGiLlyTPYP5dW1YD4LXhtBgOyevoIHGGnw=="
+  "resolved" "https://registry.npmjs.org/esbuild-darwin-arm64/-/esbuild-darwin-arm64-0.14.47.tgz"
   "version" "0.14.47"
 
-"esbuild-darwin-64@0.14.51":
-  "integrity" "sha512-YFmXPIOvuagDcwCejMRtCDjgPfnDu+bNeh5FU2Ryi68ADDVlWEpbtpAbrtf/lvFTWPexbgyKgzppNgsmLPr8PA=="
-  "resolved" "https://registry.npmjs.org/esbuild-darwin-64/-/esbuild-darwin-64-0.14.51.tgz"
+"esbuild-darwin-arm64@0.14.51":
+  "integrity" "sha512-juYD0QnSKwAMfzwKdIF6YbueXzS6N7y4GXPDeDkApz/1RzlT42mvX9jgNmyOlWKN7YzQAYbcUEJmZJYQGdf2ow=="
+  "resolved" "https://registry.npmjs.org/esbuild-darwin-arm64/-/esbuild-darwin-arm64-0.14.51.tgz"
   "version" "0.14.51"
 
 "esbuild@0.14.47":
