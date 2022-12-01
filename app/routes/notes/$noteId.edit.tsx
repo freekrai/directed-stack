@@ -59,11 +59,12 @@ export async function action({ request, params }: ActionArgs) {
             );
         }
         await directus.items("notes").updateOne(
-            params.noteId,
-            {
+          params.noteId,
+          {
             title,
             body,
-        })
+          }
+        )
         return redirect(`/notes/${params.noteId}`);
     }
     return redirect("/notes")
@@ -126,7 +127,8 @@ export default function NoteDetailsPage() {
             aria-errormessage={
               actionData?.errors?.body ? "body-error" : undefined
             }
-          >{data.note.body}</textarea>
+            defaultValue={data.note.body}
+          />
         </label>
         {actionData?.errors?.body && (
           <div className="pt-1 text-red-700" id="body-error">

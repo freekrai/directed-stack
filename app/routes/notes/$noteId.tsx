@@ -55,6 +55,11 @@ export default function NoteDetailsPage() {
   return (
     <div>
       <h3 className="text-2xl font-bold">{data.note.title}</h3>
+      <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+        Created: {data.note.created_at && format(parseISO(data.note.created_at), 'MMMM dd, yyyy')}
+        {' • '}
+        Last Updated: {data.note.updated_at && format(parseISO(data.note.updated_at), 'MMMM dd, yyyy')}
+      </div>
 			<article className="w-full prose dark:prose-dark max-w-none">
 				<MarkdownView content={data.body} />
 			</article>
