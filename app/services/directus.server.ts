@@ -14,7 +14,7 @@ let env = envSchema.parse(process.env);
 const directus = new Directus(env.DIRECTUS_URL);
 
 export async function getDirectusClient() {
-  //if (directus.auth.token) return directus; 
+  //if (await directus.auth.token) return directus; 
   if( env.DIRECTUS_STATIC_TOKEN ) {
     await directus.auth.static(env.DIRECTUS_STATIC_TOKEN);
   }
