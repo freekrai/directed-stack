@@ -81,12 +81,12 @@ Callout.scheme = {
 };
 
 
-type FenceProps = { 
+type CodeBlockProps = { 
 	children: ReactNode; 
 	language?: string;
 };
 
-export function Fence({ children, language }: FenceProps) {
+export function CodeBlock({ children, language }: FenceProps) {
 	return (
 	  <Highlight
 		{...defaultProps}
@@ -114,8 +114,8 @@ export function Fence({ children, language }: FenceProps) {
 	)
   }
 
-Fence.scheme = {
-	render: Fence.name,
+CodeBlock.scheme = {
+	render: CodeBlock.name,
 	description: "Highlight block of code",
 	children: ["pre", "code"],
 	attributes: {
@@ -140,7 +140,7 @@ export function MarkdownView({ content, components = {} }: Props) {
 			React, { 
 				components: { 
 					Callout,
-					Fence, 
+					CodeBlock, 
 				} 
 			})}</>
 	)
