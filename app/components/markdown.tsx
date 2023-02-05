@@ -102,6 +102,7 @@ Step.scheme = {
   render: Step.name,
   description: "Display the enclosed content as a step",
   children: ["paragraph"],
+  selfClosing: true,
   attributes: {
     title: {
       type: String,
