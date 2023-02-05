@@ -81,6 +81,40 @@ Callout.scheme = {
 };
 
 
+type StepProps = { 
+	title: string;
+	number: number;
+};
+
+
+export function Step({ title, number }: StepProps) {
+  return (
+    <div className="step flex items-center py-4">
+      <div className="flex items-center justify-center border border-gray-200 pt-1 font-bold dark:border-gray-800 rounded-full h-8 w-8 text-blue-500">
+        {number}
+      </div>
+      <h3 className="ml-3 tracking-tight font-bold">{title}</h3>
+    </div>
+  );
+}
+
+Step.scheme = {
+  render: Step.name,
+  description: "Display the enclosed content as a step",
+  children: ["paragraph"],
+  attributes: {
+    title: {
+      type: String,
+      default: "step title",
+    },
+    number: {
+      type: Number,
+      default: "step number",
+    },
+  },
+};
+
+
 type CodeBlockProps = { 
 	children: ReactNode; 
 	language?: string;
@@ -141,6 +175,7 @@ export function MarkdownView({ content, components = {} }: MarkdownProps) {
 				components: { 
 					Callout,
 					CodeBlock, 
+					Step,
 				} 
 			})}</>
 	)
