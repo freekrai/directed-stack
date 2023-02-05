@@ -4,7 +4,8 @@ import { Callout, Step, CodeBlock } from "~/components/markdown";
 export function parseMarkdown(markdown: string, options: Config = {}) {
 	return transform( parse(markdown), {
 		nodes: {
-			fence: CodeBlock.scheme
+			fence: CodeBlock.scheme,
+			step: Step.scheme			
 		},
 		tags: { 
 			callout: Callout.scheme,
