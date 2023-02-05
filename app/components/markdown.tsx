@@ -86,7 +86,7 @@ type CodeBlockProps = {
 	language?: string;
 };
 
-export function CodeBlock({ children, language }: FenceProps) {
+export function CodeBlock({ children, language }: CodeBlockProps) {
 	return (
 	  <Highlight
 		{...defaultProps}
@@ -127,13 +127,13 @@ CodeBlock.scheme = {
   };
   
 
-type Props = {
+type MarkdownProps = {
 	content: RenderableTreeNodes;
 	components?: Record<string, React.ComponentType>;
 };
 
 
-export function MarkdownView({ content, components = {} }: Props) {
+export function MarkdownView({ content, components = {} }: MarkdownProps) {
 	return (
 		<>{renderers.react(
 			content, 
