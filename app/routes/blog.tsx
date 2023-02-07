@@ -170,7 +170,7 @@ export default function Articles() {
 						)}
 						{count === 40 && (
 							<Link to={`/blog?page=${page + 1}`} prefetch="intent">
-								News Posts
+								Newer Posts
 							</Link>
 						)}
 					</footer>
