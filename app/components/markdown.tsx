@@ -122,30 +122,36 @@ type CodeBlockProps = {
 };
 
 export function CodeBlock({ children, language }: CodeBlockProps) {
+	// if the codeblock was in a format of "language:title" then split it and use the first part as the language and the second as the title
+	let lang = language?.split(":")[0] || language;
+	let title = language?.split(":")[1] || "";
 	return (
-	  <Highlight
-		{...defaultProps}
-		code={children.trimEnd()}
-		language={language}
-		theme={undefined}
-	  >
-		{({ className, style, tokens, getTokenProps }) => (
-		  <pre className={className} style={style}>
-			<code>
-			  {tokens.map((line, lineIndex) => (
-				<React.Fragment key={lineIndex}>
-				  {line
-					.filter((token) => !token.empty)
-					.map((token, tokenIndex) => (
-					  <span key={tokenIndex} {...getTokenProps({ token })} />
-					))}
-				  {'\n'}
-				</React.Fragment>
-			  ))}
-			</code>
-		  </pre>
-		)}
-	  </Highlight>
+	  <>
+		{title && <div className="code-title">{title}</div>}
+		<Highlight
+			{...defaultProps}
+			code={children.trimEnd()}
+			language={lang}
+			theme={undefined}
+		>
+			{({ className, style, tokens, getTokenProps }) => (
+			<pre className={className} style={style}>
+				<code>
+				{tokens.map((line, lineIndex) => (
+					<React.Fragment key={lineIndex}>
+					{line
+						.filter((token) => !token.empty)
+						.map((token, tokenIndex) => (
+						<span key={tokenIndex} {...getTokenProps({ token })} />
+						))}
+					{'\n'}
+					</React.Fragment>
+				))}
+				</code>
+			</pre>
+			)}
+		</Highlight>
+	  </>
 	)
   }
 
