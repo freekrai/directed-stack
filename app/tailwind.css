@@ -338,7 +338,7 @@ h6 {
 
 
 .code-title {
-  @apply px-4 py-3 text-xs font-medium border rounded-t-lg border-[#333333] bg-[#1c1c1c] mb-0;
+  @apply px-4 py-3 text-xs font-medium border text-white rounded-t-lg border-[#333333] bg-[#1c1c1c] mb-0;
 }
 
 /*
