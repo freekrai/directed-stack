@@ -27,7 +27,7 @@ import { getThemeSession } from "~/utils/theme.server";
 import {removeTrailingSlash, getDomainUrl } from '~/utils';
 import { isAuthenticated } from "~/auth.server";
 
-import tailwindStyles from "./styles/global.css"
+import tailwindStyles from "~/tailwind.css";
 
 let [seoMeta, seoLinks] = getSeo();
 
