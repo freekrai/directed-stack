@@ -336,6 +336,18 @@ h6 {
   background: #30c85e;
 }
 
+
+.code-title {
+  @apply px-4 py-3 text-xs font-medium border rounded-t-lg text-neutral-200 border-[#333333] bg-[#1c1c1c] mb-0;
+}
+
+/*
+.code-title + div > pre,*/
+.code-title + pre {
+  @apply mt-0 rounded-t-none border-t-0;  
+}
+  
+
 /* Remove Safari input shadow on mobile */
 input[type='text'],
 input[type='email'] {
