@@ -1,5 +1,5 @@
-import type { LoaderArgs, ActionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import type { LoaderArgs, ActionArgs } from "@vercel/remix";
+import { json, redirect } from "@vercel/remix";
 
 import { getThemeSession } from "~/utils/theme.server";
 import { isTheme } from "~/utils/theme-provider";

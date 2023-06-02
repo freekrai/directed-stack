@@ -1,11 +1,36 @@
-import type { ActionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction, ActionFunction, LoaderFunction } from "@vercel/remix";
+import { json, redirect } from "@vercel/remix";
+import { Form, Link, useLoaderData, useActionData, useFormAction, useNavigation} from "@remix-run/react";
+import invariant from "tiny-invariant";
+
+//import { deleteNote, getNote } from "~/models/note.server";
+import { isAuthenticated, getDirectusClient } from "~/auth.server";
 import * as React from "react";
 
-import { isAuthenticated, getDirectusClient } from "~/auth.server";
+export async function loader({ request, params }: LoaderArgs) {
+    invariant(params.noteId, "noteId not found");
 
-export async function action({ request }: ActionArgs) {
+    const userAuthenticated = await isAuthenticated(request, true);
+    if (!userAuthenticated) {
+        return redirect("/signin");
+    }
+
+    const {user, token} = userAuthenticated;
+
+    if( token ) {
+        const directus = await getDirectusClient({ token })
+        const note = await directus.items("notes").readOne(params.noteId);
+        if (!note) {
+            throw new Response("Not Found", { status: 404 });
+        }
+        return json({ note});
+    }
+    return json({});
+}
+
+export async function action({ request, params }: ActionArgs) {
+    invariant(params.noteId, "noteId not found");
+
     const userAuthenticated = await isAuthenticated(request, true);
     if (!userAuthenticated) {
         return redirect("/signin");
@@ -33,20 +58,28 @@ export async function action({ request }: ActionArgs) {
             { status: 400 }
             );
         }
-        const note = await directus.items("notes").createOne({
+        await directus.items("notes").updateOne(
+          params.noteId,
+          {
             title,
             body,
-            status: 'published'
-        })
-        return redirect(`/notes/${note?.id}`);
+          }
+        )
+        return redirect(`/notes/${params.noteId}`);
     }
     return redirect("/notes")
 }
 
-export default function NewNotePage() {
+export default function NoteDetailsPage() {
+	const navigation = useNavigation()
+	const formAction = useFormAction()
+
+  const data = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const titleRef = React.useRef<HTMLInputElement>(null);
   const bodyRef = React.useRef<HTMLTextAreaElement>(null);
+
+  const isSubmitting = navigation.state === 'submitting' && navigation.formAction === formAction && navigation.formMethod === 'POST'
 
   React.useEffect(() => {
     if (actionData?.errors?.title) {
@@ -72,6 +105,7 @@ export default function NewNotePage() {
           <input
             ref={titleRef}
             name="title"
+            defaultValue={data.note.title}
             className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
             aria-invalid={actionData?.errors?.title ? true : undefined}
             aria-errormessage={
@@ -98,6 +132,7 @@ export default function NewNotePage() {
             aria-errormessage={
               actionData?.errors?.body ? "body-error" : undefined
             }
+            defaultValue={data.note.body}
           />
         </label>
         {actionData?.errors?.body && (
@@ -111,10 +146,27 @@ export default function NewNotePage() {
         <button
           type="submit"
           className="rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+          disabled={isSubmitting}
         >
-          Save
+          {isSubmitting ? 'Saving...' : 'Save'}
         </button>
       </div>
     </Form>
   );
+}
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+
+  return <div>An unexpected error occurred: {error.message}</div>;
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+
+  if (caught.status === 404) {
+    return <div>Note not found</div>;
+  }
+
+  throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }

@@ -1,4 +1,9 @@
-import type { HeadersFunction, LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { 
+  HeadersFunction, 
+  LinksFunction, 
+  LoaderArgs, 
+  V2_MetaFunction 
+} from "@vercel/remix";
 import {
   Links,
   useLoaderData,
@@ -7,13 +12,15 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useCatch,
+  isRouteErrorResponse,
+  ShouldRevalidateFunction,
+  useRouteError,
 } from "@remix-run/react";
 
 import ErrorPage from '~/components/errorPage'
 
 import { CacheControl } from "~/utils/cache-control.server";
-import { getSeo } from "~/seo";
+import getSeo from '~/seo'
 
 import {
   ThemeBody,
@@ -29,20 +36,21 @@ import { isAuthenticated } from "~/auth.server";
 
 import tailwindStyles from "~/tailwind.css";
 
-let [seoMeta, seoLinks] = getSeo();
-
 export const handle = {
   id: 'root',
 }
 
-export const meta: MetaFunction = () => ({
-  ...seoMeta,
-  charset: "utf-8",
-  viewport: "width=device-width,initial-scale=1",
-});
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+	return [
+    getSeo({
+      title: 'Directed Stack',
+      url: removeTrailingSlash(`${data.requestInfo.origin}${data.requestInfo.path}`)
+    }),
+	]
+}
+
 
 export const links: LinksFunction = () => [
-  ...seoLinks,
   { rel: "preconnect", href: "//fonts.gstatic.com", crossOrigin: "anonymous" },
   {rel: "stylesheet", href: tailwindStyles},
   { rel: "stylesheet", href: "//fonts.googleapis.com/css?family=Work+Sans:300,400,600,700&amp;lang=en" },
@@ -51,6 +59,7 @@ export const links: LinksFunction = () => [
 export type LoaderData = {
   user: false | { user: any; token: any; };
   theme: Theme | null;
+  canonical: string | null;
   requestInfo: {
     origin: string
     path: string
@@ -60,9 +69,13 @@ export type LoaderData = {
 export const loader = async ({ request }: LoaderArgs) => {
     const themeSession = await getThemeSession(request);
 
+    const url = getDomainUrl(request);
+    const path = new URL(request.url).pathname;
+
     const data: LoaderData = {
       user: await isAuthenticated(request),
       theme: themeSession.getTheme(),
+      canonical: removeTrailingSlash(`${url}${path}`),
       requestInfo: {
         origin: getDomainUrl(request),
         path: new URL(request.url).pathname,
@@ -87,6 +100,10 @@ function App() {
         <Meta />
         <Links />
         <ThemeHead ssrTheme={Boolean(data.theme)} />
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1"
+        />
         {data.requestInfo && <link
           rel="canonical"
           href={removeTrailingSlash(
@@ -115,43 +132,41 @@ export default function AppWithProviders() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
-  return (
-    <ErrorDocument title="Error!">
-      <ErrorPage 
-        code={500}
-        title={`There was an error`} 
-        message={error.message} 
-      />
-    </ErrorDocument>
-  );
-}
+export function ErrorBoundary() {
+  let error = useRouteError();
+  let status = '500';
+  let message = '';
+  let stacktrace;
 
-export function CatchBoundary() {
-  let caught = useCatch();
+  //console.log(error);
 
-  let message;
-  switch (caught.status) {
-    case 401:
-      message = (
-        <p>
-          Oops! Looks like you tried to visit a page that you do not have access
-          to.
-        </p>
-      );
-      break;
-    case 404:
-      message = (
-        <p>Oops! Looks like you tried to visit a page that does not exist.</p>
-      );
-      break;
-
-    default:
-      throw new Error(caught.data || caught.statusText);
+/*
+{
+    status: 404,
+    statusText: '',
+    internal: false,
+    data: {}
+  }
+*/
+  // when true, this is what used to go to `CatchBoundary`
+  if ( error.status === 404 ) {
+    status = 404;
+    message = 'Page Not Found';
+  } else if (error instanceof Error) {
+    status = '500';
+    message = error.message;
+    stacktrace = error.stack;
+  } else {
+    status = '500';
+    message = 'Unknown Error';
   }
   return (
-    <ErrorDocument title={`${caught.status} ${caught.statusText}`}>
-      <ErrorPage code={caught.status} title={`${caught.status}: ${caught.statusText}`} message={message} />
+    <ErrorDocument title="Error!">
+      <ErrorPage
+        code={status}
+        title={`There was an error`}
+        message={message}
+      />
     </ErrorDocument>
   );
 }

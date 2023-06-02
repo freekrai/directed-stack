@@ -1,6 +1,28 @@
+
+import type {
+	LoaderFunction,
+	V2_MetaFunction,
+	SerializeFrom,
+	LoaderArgs,
+} from '@vercel/remix';
 import { Link } from "@remix-run/react";
 import Container from '~/components/layout/Container'
 import { useOptionalUser } from "~/utils";
+
+import getSeo from '~/seo';
+
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+	if(!data) return [];
+	//let { meta } = data as SerializeFrom<typeof loader>;
+  const parentData = matches.flatMap((match) => match.data ?? [] );
+	return [
+		...getSeo({
+          title: data.page.title,
+			    description: data.page.excerpt,
+          url: `${parentData[0].requestInfo.url}`,
+        }),
+	  ];
+}
 
 export default function Index() {
   const user = useOptionalUser();

@@ -2,7 +2,7 @@
 this is the auth server, we use a different directus instance here.
 */
 
-import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { createCookieSessionStorage, redirect } from "@vercel/remix";
 import { Directus } from "@directus/sdk";
 
 import { envSchema } from "~/env.server";

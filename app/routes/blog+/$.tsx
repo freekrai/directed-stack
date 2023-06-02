@@ -1,22 +1,36 @@
 import type {
 	LinksFunction,
 	LoaderArgs,
-	MetaFunction,
+	V2_MetaFunction,
 	SerializeFrom,
-} from "@remix-run/node";
+} from "@vercel/remix";
 import { parseISO, format } from 'date-fns';
 import calculateReadingTime from 'reading-time'
 
-import { json, redirect } from "@remix-run/node";
+import { json, redirect } from "@vercel/remix";
 import { useLoaderData } from "@remix-run/react";
 
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 import { CacheControl } from "~/utils/cache-control.server";
 import { getDirectusClient, getAssetURL } from '~/services/directus.server'
-import { getSeoMeta, getSeoLinks } from "~/seo";
 
 import Container from '~/components/layout/Container'
+
+import getSeo from '~/seo';
+
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+	if(!data) return [];
+	//let { meta } = data as SerializeFrom<typeof loader>;
+  	const parentData = matches.flatMap((match) => match.data ?? [] );
+	return [
+		...getSeo({
+        	title: data.meta.title,
+			description: data.meta.excerpt,
+        	url: `${parentData[0].requestInfo.url}`,
+        }),
+	];
+}
 
 export async function loader({ request, context, params }: LoaderArgs) {
     const directus = await getDirectusClient();
@@ -41,18 +55,16 @@ export async function loader({ request, context, params }: LoaderArgs) {
         let body = parseMarkdown(post.body);
 		const photo = post.image ? getAssetURL(post.image) : null;
 
-		let meta = {
-			title: post.title,
-			description: post.excerpt,
-			createdAt: post.created_at,
-			author: `${post.author.first_name} ${post.author.last_name}`,
-			photo: photo,
-			readTime: readTime,
-		};
-
 		return json({ 
 			body,
-			meta
+			meta: {
+				title: post.title,
+				description: post.excerpt,
+				createdAt: post.created_at,
+				author: `${post.author.first_name} ${post.author.last_name}`,
+				photo: photo,
+				readTime: readTime,
+			}
 		}, {
 			headers: {
 				"Cache-Control": new CacheControl("swr").toString() 
@@ -63,23 +75,6 @@ export async function loader({ request, context, params }: LoaderArgs) {
 	}
 }
 
-export const meta: MetaFunction = ({data}) => {
-	if (!data) return {};
-	let { meta } = data as SerializeFrom<typeof loader>;
-
-	let seoMeta = getSeoMeta({
-		title: meta.title,
-		description: meta.description,
-	});
-	return {
-		...seoMeta,
-	};
-}
-
-export const links = () => {
-	let seoLinks = getSeoLinks();
-	return [...seoLinks];
-};
 
 export default function Article() {
 	let { body, meta } = useLoaderData<typeof loader>();

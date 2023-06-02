@@ -1,5 +1,5 @@
-import type { LoaderArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import type { LoaderArgs } from "@vercel/remix";
+import { json, redirect } from "@vercel/remix";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { isAuthenticated, getDirectusClient } from "~/auth.server";

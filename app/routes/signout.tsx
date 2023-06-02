@@ -1,5 +1,5 @@
-import { redirect } from "@remix-run/node";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import { redirect } from "@vercel/remix";
+import type { ActionArgs, LoaderArgs } from "@vercel/remix";
 
 import { logout} from "~/auth.server";
 

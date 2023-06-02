@@ -1,4 +1,4 @@
-import type {LoaderArgs} from '@remix-run/node'
+import type {LoaderArgs} from '@vercel/remix'
 import { createSitemap } from '~/utils/sitemap.server';
 import {getDirectusClient} from '~/services/directus.server';
 import { CacheControl } from "~/utils/cache-control.server";

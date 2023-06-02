@@ -1,11 +1,11 @@
 import type {
 	LinksFunction,
 	LoaderArgs,
-	MetaFunction,
+	V2_MetaFunction,
 	SerializeFrom,
-} from "@remix-run/node";
+} from "@vercel/remix";
 
-import { json, redirect } from "@remix-run/node";
+import { json, redirect } from "@vercel/remix";
 import { useLoaderData } from "@remix-run/react";
 
 import { CacheControl } from "~/utils/cache-control.server";
@@ -13,12 +13,26 @@ import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 
 import { getDirectusClient } from '~/services/directus.server'
-import { getSeoMeta, getSeoLinks } from "~/seo";
 
 import { removeTrailingSlash } from '~/utils'
 
 import ErrorPage from '~/components/errorPage'
 import Container from '~/components/layout/Container'
+
+import getSeo from '~/seo';
+
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+	if(!data) return [];
+	//let { meta } = data as SerializeFrom<typeof loader>;
+  	const parentData = matches.flatMap((match) => match.data ?? [] );
+	return [
+		...getSeo({
+        	title: data.meta.title,
+			description: '',
+        	url: `${parentData[0].requestInfo.url}`,
+        }),
+	  ];
+}
 
 export async function loader ({request, params}: LoaderArgs) {
 	const directus = await getDirectusClient();
@@ -59,37 +73,17 @@ export async function loader ({request, params}: LoaderArgs) {
 
 	let body = parseMarkdown(page.body);
 
-	let meta = {
-		title: page.title,
-	};
-
 	return json({ 
 		body, 
-		meta,
+		meta: {
+			title: page.title
+		},
 	}, {
 		headers: {
 			"Cache-Control": new CacheControl("swr").toString() 
 		},
 	});    
 }
-
-export const meta: MetaFunction = ({data}) => {
-	if (!data) return {};
-	if (!data.meta) return {};
-	let { meta } = data as SerializeFrom<typeof loader>;
-
-	let seoMeta = getSeoMeta({
-		title: meta.title,
-	});
-	return {
-		...seoMeta,
-	};
-}
-
-export const links = () => {
-	let seoLinks = getSeoLinks();
-	return [...seoLinks];
-};
 
 export default function Article() {
 	let { meta, body } = useLoaderData<typeof loader>();

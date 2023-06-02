@@ -1,8 +1,8 @@
 import type {
   ActionFunction,
-  MetaFunction,
-} from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+  V2_MetaFunction,
+} from "@vercel/remix";
+import { json, redirect } from "@vercel/remix";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
@@ -20,6 +20,20 @@ interface ActionData {
     passwordConfirmation?: string;
   };
 }
+
+import getSeo from '~/seo';
+
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+	//let { meta } = data as SerializeFrom<typeof loader>;
+  	const parentData = matches.flatMap((match) => match.data ?? [] );
+	return [
+		...getSeo({
+        	title: 'Sign Up',
+        	url: `${parentData[0].requestInfo.url}`,
+        }),
+	];
+}
+
 
 export const action: ActionFunction = async ({ request }) => {
 
@@ -97,12 +111,6 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 }
-
-export const meta: MetaFunction = () => {
-    return {
-      title: "Login",
-    };
-};
     
 export default function LoginPage() {
     const [searchParams] = useSearchParams();

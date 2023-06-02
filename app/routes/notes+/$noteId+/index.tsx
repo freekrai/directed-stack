@@ -1,5 +1,5 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@vercel/remix";
+import { json, redirect } from "@vercel/remix";
 import { Link, Form, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { parseISO, format } from 'date-fns';
