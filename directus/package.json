@@ -5,9 +5,12 @@
   "scripts": {
     "start": "npx directus start"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
-    "directus": "^9.22.4",
-    "pg": "^8.8.0",
+    "directus": "^10.2.1",
+    "pg": "^8.11.0",
     "sqlite3": "^5.1.4"
   }
 }
