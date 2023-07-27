@@ -2,7 +2,7 @@ import type { LoaderArgs } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
-import { isAuthenticated, getDirectusClient } from "~/auth.server";
+import { isAuthenticated, getDirectusClient, getItemsByQuery } from "~/auth.server";
 import { CacheControl } from "~/utils/cache-control.server";
 
 export async function loader ({request}: LoaderArgs) {
@@ -16,8 +16,7 @@ export async function loader ({request}: LoaderArgs) {
         const {user, token} = userAuthenticated;
 
         if( token ) {
-            const directus = await getDirectusClient({ token })
-            const results = await directus.items("notes").readByQuery({
+            const notes = await getItemsByQuery("notes", {
                 filter: {
                   created_by: {
                     '_eq': user.id
@@ -26,13 +25,13 @@ export async function loader ({request}: LoaderArgs) {
                 offset: 0,
                 limit: -1,
                 fields: ["*.*"],
-                meta: 'total_count',
-                sort: ["-updated_at"],
+                sort: "-updated_at",
             });
+
             return json({ 
                 title: "Dashboard",
                 user, 
-                notes: results.data || [],
+                notes: notes || [],
             }, {
                 headers: {
                     "Cache-Control": new CacheControl("swr").toString() 

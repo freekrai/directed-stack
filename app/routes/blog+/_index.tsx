@@ -7,7 +7,7 @@ import type {
 import { json } from "@vercel/remix";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 
-import { getDirectusClient } from '~/services/directus.server'
+import { getItemsByQuery, getItemsCount } from '~/services/directus.server'
 import Container from '~/components/layout/Container'
 
 import getSeo from '~/seo';
@@ -26,8 +26,6 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
 }
 
 export async function loader({ request, context }: LoaderArgs) {
-    const directus = await getDirectusClient();
-
 	let url = new URL(request.url);
 
 	let term = url.searchParams.get("q") ?? "";
@@ -42,7 +40,9 @@ export async function loader({ request, context }: LoaderArgs) {
         offset = page * limit;
       }
     }
-    const results = await directus.items("posts").readByQuery({
+	
+	const total = await getItemsCount('posts');
+    const posts = await getItemsByQuery("posts", {
         filter: {
 			status: {
 				'_eq': 'published'
@@ -52,16 +52,15 @@ export async function loader({ request, context }: LoaderArgs) {
         offset,
         limit,
         fields: ["*.*"],
-        meta: 'total_count',
         //sort: ["-created"],
     });
-    const posts = results.data;
+
     let meta = {
         title: 'Blog ',
     }
     const pagination = {
-        total: results.meta.total_count,
-        pageCount: Math.floor(results.meta.total_count / limit),
+        total: total,
+        pageCount: Math.floor(total / limit),
         page: page,
         prev: 0,
         next: 0,
@@ -78,13 +77,6 @@ export async function loader({ request, context }: LoaderArgs) {
 
 	return json({ term, page, posts, meta });
 }
-/*
-export let meta: MetaFunction = ({ data }) => {
-	if (!data) return {};
-	let { meta } = data as SerializeFrom<typeof loader>;
-	return meta;
-};
-*/
 
 export default function Articles() {
 	let { posts, term, page } = useLoaderData<typeof loader>();
@@ -118,12 +110,12 @@ export default function Articles() {
 					<footer className="flex w-full justify-evenly">
 						{page > 1 && (
 							<Link to={`/blog?page=${page - 1}`} prefetch="intent">
-								Older Posts
+								Newer Posts
 							</Link>
 						)}
 						{count === 40 && (
 							<Link to={`/blog?page=${page + 1}`} prefetch="intent">
-								Newer Posts
+								Older Posts
 							</Link>
 						)}
 					</footer>

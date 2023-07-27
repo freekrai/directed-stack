@@ -1,6 +1,6 @@
 import type {LoaderArgs} from '@vercel/remix'
 import { createSitemap } from '~/utils/sitemap.server';
-import {getDirectusClient} from '~/services/directus.server';
+import {getDirectusClient, getItemsByQuery} from '~/services/directus.server';
 import { CacheControl } from "~/utils/cache-control.server";
 import {getDomainUrl} from '~/utils/'
 
@@ -11,7 +11,7 @@ export const loader = async ({request}: LoaderArgs) => {
     const blogUrl = `${getDomainUrl(request)}`
 
     // get all published pages
-    const pages = await directus.items("pages").readByQuery({
+    const pages = await getItemsByQuery("pages", {
         filter: {
 			status: {
 				'_eq': 'published'
@@ -20,11 +20,10 @@ export const loader = async ({request}: LoaderArgs) => {
         offset: 0,
         limit: -1,
         fields: ["*.*"],
-        meta: 'total_count',
     });
 
     // get all published posts
-    const posts = await directus.items("posts").readByQuery({
+    const posts = await getItemsByQuery("posts", {
         filter: {
 			status: {
 				'_eq': 'published'
@@ -33,14 +32,13 @@ export const loader = async ({request}: LoaderArgs) => {
         offset: 0,
         limit: -1,
         fields: ["*.*"],
-        meta: 'total_count',
     });
 
-    const pageUrls = pages && pages.data && pages.data.map( page => {
+    const pageUrls = pages.map( page => {
         return {url: `${blogUrl}/${page.slug}`}
     }) || []
 
-    const postUrls = posts && posts.data && posts.data.map( post => {
+    const postUrls = posts.map( post => {
         return {url: `${blogUrl}/blog/${post.slug}`}
     }) || []
 

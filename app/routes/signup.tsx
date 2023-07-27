@@ -9,9 +9,9 @@ import invariant from "tiny-invariant";
 
 import Container from '~/components/layout/Container'
 import { safeRedirect, validateEmail } from "~/utils/";
-import { getDirectusClient } from '~/services/directus.server';
+import { getDirectusClient, createUser } from '~/services/directus.server';
 import { login, createUserSession } from '~/auth.server';
-
+import getSeo from '~/seo';
 
 interface ActionData {
   errors?: {
@@ -20,8 +20,6 @@ interface ActionData {
     passwordConfirmation?: string;
   };
 }
-
-import getSeo from '~/seo';
 
 export const meta: V2_MetaFunction = ({ data, matches }) => {
 	//let { meta } = data as SerializeFrom<typeof loader>;
@@ -77,11 +75,13 @@ export const action: ActionFunction = async ({ request }) => {
   try { 
     // 1. create user
     const directus = await getDirectusClient();
-    const newUser = await directus.users.createOne({
-      email: email,
-      password: password,
-      role: process.env.DIRECTUS_USER_ROLE
-    });
+    const newUser = await directus.request(
+      createUser({
+        email: email,
+        password: password,
+        role: process.env.DIRECTUS_USER_ROLE  
+      })
+    );
 
     // 2. log user in
     if( newUser ) {

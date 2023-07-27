@@ -10,14 +10,14 @@ import Container from '~/components/layout/Container'
 import { safeRedirect, validateEmail } from "~/utils/";
 import { login, createUserSession } from '~/auth.server';
 
+import getSeo from '~/seo';
+
 interface ActionData {
   errors?: {
     email?: string;
     password?: string;
   };
 }
-
-import getSeo from '~/seo';
 
 export const meta: V2_MetaFunction = ({ data, matches }) => {
 	//let { meta } = data as SerializeFrom<typeof loader>;

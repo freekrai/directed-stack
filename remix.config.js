@@ -6,6 +6,7 @@ module.exports = {
     /^marked.*/,
   ],  
   ignoredRouteFiles: ['**/*'],
+  serverModuleFormat: 'cjs',
   tailwind: true,
   future: {
     v2_routeConvention: true,

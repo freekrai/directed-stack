@@ -8,9 +8,11 @@ import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 
 import * as React from "react";
 
-import { isAuthenticated, getDirectusClient } from "~/auth.server";
+import { isAuthenticated } from "~/auth.server";
 import { CacheControl } from "~/utils/cache-control.server";
 import Container from '~/components/layout/Container'
+
+import getSeo from '~/seo';
 
 type IndexData = {
     token?: string;
@@ -18,8 +20,6 @@ type IndexData = {
         email?: string;
     }
 };
-
-import getSeo from '~/seo';
 
 export const meta: V2_MetaFunction = ({ data, matches }) => {
 	//if(!data) return [];
@@ -46,7 +46,7 @@ export async function loader ({request}: LoaderArgs) {
             return redirect("/signin");
         }
 
-        const {user, token} = userAuthenticated;
+        const {user} = userAuthenticated;
         return json({ 
             title: "Dashboard",
             user, 

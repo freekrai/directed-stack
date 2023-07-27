@@ -12,7 +12,7 @@ import { CacheControl } from "~/utils/cache-control.server";
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 
-import { getDirectusClient } from '~/services/directus.server'
+import { getItemBySlug } from '~/services/directus.server'
 
 import { removeTrailingSlash } from '~/utils'
 
@@ -35,8 +35,6 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
 }
 
 export async function loader ({request, params}: LoaderArgs) {
-	const directus = await getDirectusClient();
-
 	let apath = params["*"];
 	if (!apath) return redirect("/");
 
@@ -46,25 +44,8 @@ export async function loader ({request, params}: LoaderArgs) {
 	
 	let path = removeTrailingSlash(apath)?.split("/").slice(-1).toString();
 	
-	const results = await directus.items("pages").readByQuery({
-		filter: {
-			"_and": [
-				{
-					status: {
-					'_eq': 'published'
-					},
-				},
-				{
-					slug: {
-					_eq: path,
-					},
-				},
-			],
-		},
-		limit: -1,
-		fields: ["*.*"],
-	});
-	const page = results.data![0];
+	const page = await getItemBySlug("pages", path, 'published');
+	
 	if (!page) {
 		throw json({}, {
 			status: 404, headers:  {}

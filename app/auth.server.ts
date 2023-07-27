@@ -3,9 +3,34 @@ this is the auth server, we use a different directus instance here.
 */
 
 import { createCookieSessionStorage, redirect } from "@vercel/remix";
-import { Directus } from "@directus/sdk";
+
+import { createDirectus } from '@directus/sdk';
+import { authentication } from '@directus/sdk/auth';
+import { 
+  rest, 
+  readMe, 
+  updateMe,
+  readItem,
+  readItems,
+  createItem,
+  updateItem,
+  aggregate,
+  readSingleton,
+  deleteItem,
+} from '@directus/sdk/rest';
 
 import { envSchema } from "~/env.server";
+
+export type DirectusQuery = {
+  fields: string[];
+  filter?: any | undefined;
+  limit?: number | undefined;
+  offset?: number | undefined;
+  search?: string | undefined;
+  page?: number | undefined;
+  meta?: any | undefined;
+  sort?: string | undefined;
+}
 
 let env = envSchema.parse(process.env);
 
@@ -41,13 +66,14 @@ export type User = {
   token?: string;
 }
 
-export const directus = new Directus(env.DIRECTUS_URL || "", {
-  auth: {
-    mode: 'cookie',
+//const directus = createDirectus(env.DIRECTUS_URL).with( authentication() ).with( rest() );
+
+export const directus = createDirectus(env.DIRECTUS_URL) 
+  .with(rest())
+  .with(authentication('cookie', {
+    msRefreshBeforeExpires: 900000,
     autoRefresh: true,
-    msRefreshBeforeExpires: 900000
-  },
-});
+  }))
 
 export async function getDirectusClient({
   email,
@@ -58,12 +84,10 @@ export async function getDirectusClient({
   password?: string;
   token?: string;
 }) {
-  if (await directus.auth.token) return directus;
-
   if (email && password) {
-    await directus.auth.login({ email, password });
+    await directus.login(email, password);
   } else if (token) {
-    await directus.auth.static( token );
+    await directus.setToken(token);
   }
   return directus;
 }
@@ -119,7 +143,7 @@ export async function login({
   email: string;
   password: string;
 }) {
-  const user = await directus.auth.login({ email, password});
+  const user = await directus.login(email, password);
   return user
 }
 
@@ -148,8 +172,12 @@ export async function getUser(request: Request) {
 
 const getUserByToken = async (token: string) => {
   try {
-    await directus.auth.static(token);
-    const user = await directus.users.me.read();
+    await directus.setToken(token);
+    const user = await directus.request(
+      readMe({
+        fields: ['*'],
+      })
+    );
     if (!user.email) return false;
     return user;
   } catch(e) {
@@ -180,11 +208,86 @@ export const isAuthenticated = async (request: Request, validateAndReturnUser = 
   try {    
     const token = await getToken(request);
     if(!token) return false;
-    await directus.auth.static(token);
-    const user = await directus.users.me.read();
+    await directus.setToken(token);
+    const user = await directus.request(
+      readMe({
+        fields: ['*'],
+      })
+    );
     if (!user.email) return false;
     return {user, token};
   } catch(e) {
     return false;
   }
 };
+
+export async function getItemsCount(collection: string) {
+	const result = await directus.request(
+		aggregate(collection, {
+			aggregate: { count: '*' },
+			//groupBy: 'id',
+		})
+	);
+	return result[0].count as unknown as number;
+}
+
+export async function getSingleton(collection: string, query?: DirectusQuery) {
+	return directus.request( readSingleton(collection, query || {}) );
+}
+
+export async function getItemsByQuery(collection: string, query: DirectusQuery) {
+	return directus.request( readItems(collection, query) );
+}
+
+export async function getItemBySlug(collection: string, slug: string, status='any') {
+	let filter: any = {}
+
+	// otherwise if "any" then any status...
+	if( status === 'any' ) {
+		filter = {
+			slug: {
+				_eq: slug,
+			},
+		}
+	} else {
+		filter = {
+			"_and": [
+				{
+					status: {
+						'_eq': status
+					},
+				},
+				{
+					slug: {
+						_eq: slug,
+					},
+				}
+			]
+		}
+	}
+	const results = await getItemsByQuery(collection, {
+		filter: filter,
+		limit: 1,
+		fields: ["*.*"],
+	});
+	// we return a single result here...
+    return results[0];
+}
+
+export async function getItemById(collection: string, id: string) {
+	return directus.request( readItem(collection, id) );
+}
+
+
+// export to include as needed...
+export {
+  readMe, 
+  updateMe,
+  readItem,
+  readItems,
+  readSingleton,
+  aggregate,
+  createItem,
+  updateItem,
+  deleteItem,
+}

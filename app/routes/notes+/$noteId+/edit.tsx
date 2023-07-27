@@ -4,7 +4,7 @@ import { Form, Link, useLoaderData, useActionData, useFormAction, useNavigation}
 import invariant from "tiny-invariant";
 
 //import { deleteNote, getNote } from "~/models/note.server";
-import { isAuthenticated, getDirectusClient } from "~/auth.server";
+import { isAuthenticated, getDirectusClient, getItemById, updateItem } from "~/auth.server";
 import * as React from "react";
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -19,7 +19,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
     if( token ) {
         const directus = await getDirectusClient({ token })
-        const note = await directus.items("notes").readOne(params.noteId);
+        const note = await getItemById("notes", params.noteId);
         if (!note) {
             throw new Response("Not Found", { status: 404 });
         }
@@ -58,13 +58,16 @@ export async function action({ request, params }: ActionArgs) {
             { status: 400 }
             );
         }
-        await directus.items("notes").updateOne(
-          params.noteId,
-          {
-            title,
-            body,
-          }
-        )
+        await directus.request(
+          updateItem(
+            'notes', 
+            params.noteId, 
+            {
+              title,
+              body
+            }
+          )
+        );
         return redirect(`/notes/${params.noteId}`);
     }
     return redirect("/notes")

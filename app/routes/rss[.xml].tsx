@@ -2,7 +2,7 @@ import type {LoaderArgs} from '@vercel/remix'
 import { add, parseISO, format } from 'date-fns';
 import {getDomainUrl} from '~/utils/'
 
-import {getDirectusClient } from '~/services/directus.server';
+import {getDirectusClient, getItemsByQuery } from '~/services/directus.server';
 
 type Post = {
   attributes: { 
@@ -19,9 +19,7 @@ function cdata(s: string) {
 export const loader = async ({request}: LoaderArgs) => {
     const blogUrl = `${getDomainUrl(request)}/blog`
 
-    const directus = await getDirectusClient();
-
-    const results = await directus.items("posts").readByQuery({
+    const posts = await getItemsByQuery("posts", {
         filter: {
 			status: {
 				'_eq': 'published'
@@ -33,7 +31,6 @@ export const loader = async ({request}: LoaderArgs) => {
         meta: 'total_count',
         //sort: ["-created"],
     });
-    const posts = results.data;
 
     const rss = `
         <rss xmlns:blogChannel="${blogUrl}" version="2.0">

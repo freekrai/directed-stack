@@ -4,7 +4,7 @@ import { Link, Form, useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { parseISO, format } from 'date-fns';
 
-import { isAuthenticated, getDirectusClient } from "~/auth.server";
+import { isAuthenticated, getDirectusClient, getItemById, deleteItem } from "~/auth.server";
 
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
@@ -21,7 +21,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
     if( token ) {
         const directus = await getDirectusClient({ token })
-        const note = await directus.items("notes").readOne(params.noteId);
+        const note = await getItemById("notes", params.noteId);
         if (!note) {
             throw new Response("Not Found", { status: 404 });
         }
@@ -44,7 +44,7 @@ export async function action({ request, params }: ActionArgs) {
     if( token ) {
         const directus = await getDirectusClient({ token })
         invariant(params.noteId, "noteId not found");
-        await directus.items("notes").deleteOne(params.noteId);
+        await directus.request( deleteItem('notes', params.noteId) );
     }
     return redirect("/notes");
 }

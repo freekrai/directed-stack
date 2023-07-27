@@ -3,7 +3,7 @@ import { json, redirect } from "@vercel/remix";
 import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";
 
-import { isAuthenticated, getDirectusClient } from "~/auth.server";
+import { isAuthenticated, getDirectusClient, createItem } from "~/auth.server";
 
 export async function action({ request }: ActionArgs) {
     const userAuthenticated = await isAuthenticated(request, true);
@@ -33,11 +33,16 @@ export async function action({ request }: ActionArgs) {
             { status: 400 }
             );
         }
-        const note = await directus.items("notes").createOne({
-            title,
-            body,
-            status: 'published'
-        })
+        const note = await directus.request(
+          createItem(
+            'notes', 
+            {
+              title,
+              body,
+              status: 'published'  
+            }
+          )
+        );
         return redirect(`/notes/${note?.id}`);
     }
     return redirect("/notes")
