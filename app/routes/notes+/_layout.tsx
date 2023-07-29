@@ -2,7 +2,7 @@ import type { LoaderArgs } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
-import { isAuthenticated, getDirectusClient, getItemsByQuery } from "~/auth.server";
+import { isAuthenticated, getDirectusClient, readByQuery } from "~/auth.server";
 import { CacheControl } from "~/utils/cache-control.server";
 
 export async function loader ({request}: LoaderArgs) {
@@ -16,7 +16,7 @@ export async function loader ({request}: LoaderArgs) {
         const {user, token} = userAuthenticated;
 
         if( token ) {
-            const notes = await getItemsByQuery("notes", {
+            const notes = await readByQuery("notes", {
                 filter: {
                   created_by: {
                     '_eq': user.id

@@ -34,6 +34,25 @@ export type DirectusQuery = {
 
 let env = envSchema.parse(process.env);
 
+function serializeSearchParams(obj: any, prefix = ''): string {
+	const str:string[] = [];
+	let p;
+	for (p in obj) {
+		// eslint-disable-next-line no-prototype-builtins
+		if (obj.hasOwnProperty(p)) {
+			const k = prefix ? prefix + '[' + p + ']' : p;
+			const v = obj[p];
+			str.push(
+				v !== null && typeof v === 'object'
+					? serializeSearchParams(v, k)
+					: encodeURIComponent(k) + '=' + encodeURIComponent(v)
+			);
+		}
+	}
+	return str.join('&');
+}
+
+
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__session",
@@ -85,7 +104,7 @@ export async function getDirectusClient({
   token?: string;
 }) {
   if (email && password) {
-    await directus.login(email, password);
+    await directus.login(email, password, { mode: 'cookie'});
   } else if (token) {
     await directus.setToken(token);
   }
@@ -221,14 +240,30 @@ export const isAuthenticated = async (request: Request, validateAndReturnUser = 
   }
 };
 
-export async function getItemsCount(collection: string) {
+
+// return a count, grouped by status and return only published items...
+export async function getItemsCount(collection: string, status='published') {
 	const result = await directus.request(
 		aggregate(collection, {
 			aggregate: { count: '*' },
-			//groupBy: 'id',
+			groupBy: ['status'],
 		})
 	);
-	return result[0].count as unknown as number;
+	// only filter by status...
+	const published = result.filter( (r:any) => r.status === status );
+	return published[0].count as unknown as number;
+}
+
+export async function getAggregate(collection: string, status='published') {
+	const result = await directus.request(
+		aggregate(collection, {
+			aggregate: { count: '*' },
+			groupBy: ['status'],
+		})
+	);
+	// only filter by status...
+	const published = result.filter( (r:any) => r.status === status );
+	return published[0].count as unknown as number;
 }
 
 export async function getSingleton(collection: string, query?: DirectusQuery) {
@@ -237,6 +272,14 @@ export async function getSingleton(collection: string, query?: DirectusQuery) {
 
 export async function getItemsByQuery(collection: string, query: DirectusQuery) {
 	return directus.request( readItems(collection, query) );
+}
+
+export async function readByQuery(collection: string, query: DirectusQuery) {
+	return directus.request( readItems(collection, query) );
+}
+
+export async function readOne(collection: string, id: string) {
+	return directus.request( readItem(collection, id) );
 }
 
 export async function getItemBySlug(collection: string, slug: string, status='any') {
@@ -274,20 +317,99 @@ export async function getItemBySlug(collection: string, slug: string, status='an
     return results[0];
 }
 
+export async function readBySlug(collection: string, slug: string, status='any') {
+	let filter: any = {}
+
+	// otherwise if "any" then any status...
+	if( status === 'any' ) {
+		filter = {
+			slug: {
+				_eq: slug,
+			},
+		}
+	} else {
+		filter = {
+			"_and": [
+				{
+					status: {
+						'_eq': status
+					},
+				},
+				{
+					slug: {
+						_eq: slug,
+					},
+				}
+			]
+		}
+	}
+	const results = await readByQuery(collection, {
+		filter: filter,
+		limit: 1,
+		fields: ["*.*"],
+	});
+	// we return a single result here...
+    return results[0];
+}
+
 export async function getItemById(collection: string, id: string) {
 	return directus.request( readItem(collection, id) );
 }
 
+export async function graphqlQuery( query: string ) {
+	return directus.query( query );
+}
+
+export async function createOne(collection: string, data: any) {
+	return directus.request(
+		createItem(collection, data)
+	);
+}
+
+export async function updateOne(collection: string, id: any, data: any) {
+	return directus.request(
+		updateItem(collection, id, data)
+	);
+}
+
+export async function deleteOne(collection: string, id: any) {
+	return directus.request( deleteItem(collection, id) );
+}
+
+// if id, we update, otherwise we create an item in the specified collection...
+export async function upsertOne(collection: string, data: any, id?: string) {
+	if( id ) {
+		return directus.request(
+			updateItem(collection, id, data)
+		);	
+	} else {
+		return directus.request(
+			createItem(collection, data)
+		);
+	}
+}
+
+export function getAssetURL(image: any, urlParamsObject = {} ) {
+  if (!image) return null;
+
+  let id = image;
+  if ( typeof image === 'object' ) { 
+    id = image.id;
+  }
+  if (!id) return null;
+  let queryString = serializeSearchParams(urlParamsObject)
+  return `${process.env.DIRECTUS_URL}/assets/${id}${queryString ? `?${queryString}` : ""}`;
+}
 
 // export to include as needed...
 export {
-  readMe, 
+	readItem, 
+	readSingleton,
+	readItems, 
+  readMe,
   updateMe,
-  readItem,
-  readItems,
-  readSingleton,
-  aggregate,
-  createItem,
-  updateItem,
-  deleteItem,
+	createItem, 
+	updateItem, 
+	deleteItem,
+	aggregate,
 }

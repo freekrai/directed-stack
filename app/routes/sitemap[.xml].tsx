@@ -1,6 +1,6 @@
 import type {LoaderArgs} from '@vercel/remix'
 import { createSitemap } from '~/utils/sitemap.server';
-import {getDirectusClient, getItemsByQuery} from '~/services/directus.server';
+import {getDirectusClient, readByQuery} from '~/services/directus.server';
 import { CacheControl } from "~/utils/cache-control.server";
 import {getDomainUrl} from '~/utils/'
 
@@ -11,7 +11,7 @@ export const loader = async ({request}: LoaderArgs) => {
     const blogUrl = `${getDomainUrl(request)}`
 
     // get all published pages
-    const pages = await getItemsByQuery("pages", {
+    const pages = await readByQuery("pages", {
         filter: {
 			status: {
 				'_eq': 'published'
@@ -23,7 +23,7 @@ export const loader = async ({request}: LoaderArgs) => {
     });
 
     // get all published posts
-    const posts = await getItemsByQuery("posts", {
+    const posts = await readByQuery("posts", {
         filter: {
 			status: {
 				'_eq': 'published'

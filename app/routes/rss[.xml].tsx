@@ -2,7 +2,7 @@ import type {LoaderArgs} from '@vercel/remix'
 import { add, parseISO, format } from 'date-fns';
 import {getDomainUrl} from '~/utils/'
 
-import {getDirectusClient, getItemsByQuery } from '~/services/directus.server';
+import {getDirectusClient, readByQuery } from '~/services/directus.server';
 
 type Post = {
   attributes: { 
@@ -19,7 +19,7 @@ function cdata(s: string) {
 export const loader = async ({request}: LoaderArgs) => {
     const blogUrl = `${getDomainUrl(request)}/blog`
 
-    const posts = await getItemsByQuery("posts", {
+    const posts = await readByQuery("posts", {
         filter: {
 			status: {
 				'_eq': 'published'

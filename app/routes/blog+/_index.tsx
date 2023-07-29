@@ -7,7 +7,7 @@ import type {
 import { json } from "@vercel/remix";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
 
-import { getItemsByQuery, getItemsCount } from '~/services/directus.server'
+import { readByQuery, getItemsCount } from '~/services/directus.server'
 import Container from '~/components/layout/Container'
 
 import getSeo from '~/seo';
@@ -42,7 +42,7 @@ export async function loader({ request, context }: LoaderArgs) {
     }
 	
 	const total = await getItemsCount('posts');
-    const posts = await getItemsByQuery("posts", {
+    const posts = await readByQuery("posts", {
         filter: {
 			status: {
 				'_eq': 'published'

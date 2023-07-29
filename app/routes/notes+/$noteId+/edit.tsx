@@ -1,10 +1,16 @@
-import type { ActionArgs, LoaderArgs, V2_MetaFunction, ActionFunction, LoaderFunction } from "@vercel/remix";
+import type { 
+  ActionArgs, 
+  LoaderArgs, 
+  V2_MetaFunction, 
+  ActionFunction, 
+  LoaderFunction 
+} from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { Form, Link, useLoaderData, useActionData, useFormAction, useNavigation} from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 //import { deleteNote, getNote } from "~/models/note.server";
-import { isAuthenticated, getDirectusClient, getItemById, updateItem } from "~/auth.server";
+import { isAuthenticated, getDirectusClient, readOne, updateItem, updateOne } from "~/auth.server";
 import * as React from "react";
 
 export async function loader({ request, params }: LoaderArgs) {
@@ -19,7 +25,7 @@ export async function loader({ request, params }: LoaderArgs) {
 
     if( token ) {
         const directus = await getDirectusClient({ token })
-        const note = await getItemById("notes", params.noteId);
+        const note = await readOne("notes", params.noteId);
         if (!note) {
             throw new Response("Not Found", { status: 404 });
         }

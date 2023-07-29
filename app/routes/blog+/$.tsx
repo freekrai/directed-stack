@@ -13,7 +13,7 @@ import { useLoaderData } from "@remix-run/react";
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 import { CacheControl } from "~/utils/cache-control.server";
-import { getItemBySlug, getAssetURL } from '~/services/directus.server'
+import { readBySlug, getAssetURL } from '~/services/directus.server'
 
 import Container from '~/components/layout/Container'
 
@@ -37,7 +37,7 @@ export async function loader({ request, context, params }: LoaderArgs) {
 	if (!path) return redirect("/blog");
 
 	try {
-		const post = await getItemBySlug("posts", path, 'published');
+		const post = await readBySlug("posts", path, 'published');
 
 		const readTime = calculateReadingTime(post.body);
         let body = parseMarkdown(post.body);

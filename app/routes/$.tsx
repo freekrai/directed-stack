@@ -12,7 +12,7 @@ import { CacheControl } from "~/utils/cache-control.server";
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 
-import { getItemBySlug } from '~/services/directus.server'
+import { readBySlug } from '~/services/directus.server'
 
 import { removeTrailingSlash } from '~/utils'
 
@@ -44,7 +44,7 @@ export async function loader ({request, params}: LoaderArgs) {
 	
 	let path = removeTrailingSlash(apath)?.split("/").slice(-1).toString();
 	
-	const page = await getItemBySlug("pages", path, 'published');
+	const page = await readBySlug("pages", path, 'published');
 	
 	if (!page) {
 		throw json({}, {
