@@ -4,6 +4,7 @@ import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";
 
 import { isAuthenticated, getDirectusClient, createOne } from "~/auth.server";
+import { Editor } from "~/components/core/editor";
 
 export async function action({ request }: ActionArgs) {
     const userAuthenticated = await isAuthenticated(request, true);
@@ -48,6 +49,13 @@ export default function NewNotePage() {
   const titleRef = React.useRef<HTMLInputElement>(null);
   const bodyRef = React.useRef<HTMLTextAreaElement>(null);
 
+  let [hidePreview, setHidePreview] = React.useState(false)
+  const [markup, setMarkup] = React.useState('');
+  
+  const handleChange = (newValue: string) => {
+	  setMarkup(newValue)
+  }  
+
   React.useEffect(() => {
     if (actionData?.errors?.title) {
       titleRef.current?.focus();
@@ -66,6 +74,7 @@ export default function NewNotePage() {
         width: "100%",
       }}
     >
+      <input type="hidden" value={markup} id="body" name="body" />
       <div>
         <label className="flex w-full flex-col gap-1">
           <span>Title: </span>
@@ -89,15 +98,10 @@ export default function NewNotePage() {
       <div>
         <label className="flex w-full flex-col gap-1">
           <span>Body: </span>
-          <textarea
-            ref={bodyRef}
-            name="body"
-            rows={12}
-            className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
-            aria-invalid={actionData?.errors?.body ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.body ? "body-error" : undefined
-            }
+          <Editor 
+            content={markup}
+            onChange={handleChange}
+            hidePreview={hidePreview}
           />
         </label>
         {actionData?.errors?.body && (
