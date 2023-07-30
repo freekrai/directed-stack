@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
-dotenv.config({ path: './.env' });
-
 import { build } from "new-directus-schema-builder-kit"
+
+dotenv.config({ path: './.env' });
 
 const STATUS_INTERFACE_CHOICES = [
   { text: "$t:published", value: "published" },
@@ -67,6 +67,7 @@ const model = build((builder) => {
     .display("labels", { showAsDot: true, choices: STATUS_DISPLAY_CHOICES });
   posts.image("image");
   posts.string("title", 90).notNullable().interface("input", { trim: true }).required();
+  posts.string("published").notNullable().interface("datetime");
   posts.string("slug").interface("extension-wpslug", { template: "{{title}}", prefix: "/blog/" }).required();
 //  posts.string("slug").notNullable().unique().interface("input", { trim: true, slug: true }).required();
   posts.text("excerpt").notNullable().interface("input-multiline", { trim: true }).required();

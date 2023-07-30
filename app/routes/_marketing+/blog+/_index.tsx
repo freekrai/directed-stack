@@ -1,11 +1,18 @@
 import type {
 	LoaderArgs,
 	V2_MetaFunction,
-	SerializeFrom,
 } from "@vercel/remix";
 
-import { json } from "@vercel/remix";
-import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
+import { defer } from "@vercel/remix";
+import { 
+	Await,
+	Link, 
+	useLoaderData, 
+} from "@remix-run/react";
+import { Suspense } from 'react';
+import { CacheControl } from "~/utils/cache-control.server";
+import { parseISO, format } from 'date-fns';
+import { Icon } from '~/components/icons'
 
 import { readByQuery, getItemsCount } from '~/services/directus.server'
 import Container from '~/components/layout/Container'
@@ -75,9 +82,25 @@ export async function loader({ request, context }: LoaderArgs) {
     if (page !== 1) meta.title = `Page "${1} of ${pagination.pageCount}`
 	if (term !== "") meta.title = `Search results for "${term}"`
 
-	return json({ term, page, posts, meta });
+	return defer({ 
+		term, 
+		page, 
+		posts, 
+		meta 
+	}, {
+		headers: {
+		  'Cache-Control': 'private, max-age=3600',
+		  'Vary': 'Cookie',
+		},
+	})
 }
 
+export function headers() {
+	return {
+	  "Cache-Control": new CacheControl("swr").toString(),
+	  'Vary': 'Cookie',
+	};
+}
 export default function Articles() {
 	let { posts, term, page } = useLoaderData<typeof loader>();
 
@@ -91,19 +114,46 @@ export default function Articles() {
 					</header>
 					<div className="space-y-4 w-full">
 						<div className="space-y-2 w-full">
-							{posts && posts.map((post) => (
-								<div key={post.id}>
-									<Link to={`/blog/${post.slug}`} prefetch="intent" className="dark:text-gray-200">
-										<h2 className="text-xl font-semibold text-gray-900">{post.title}</h2>
-									</Link>
-									{post.excerpt && <p className="text-gray-600 dark:text-gray-400 truncate">{post.excerpt}...</p>}
-									<div className="mt-3">
-										<Link to={`/blog/${post.slug}`} prefetch="intent" className="text-base font-semibold text-indigo-600 hover:text-indigo-500">
-											Read full story
-										</Link>
-									</div>
-								</div>
-							))}
+							<Suspense fallback={<strong>Loading...</strong>}>
+								<Await resolve={posts}>
+									{(posts) => <>
+										{posts && posts.map((post) => (
+											<div 
+												key={post.id}
+												className="mb-2 border border-indigo-200 rounded-md p-4 m-2 group"
+											>
+												<Link 
+													key={post.id} 
+													to={`/blog/${post.slug}`} 
+													prefetch="intent"
+													className="text-indigo-600 hover:text-gray-600"
+												>
+													<div className="mb-2">
+														<time dateTime={post.published} className="text-gray-300 text-sm">
+															{format(parseISO(post.published), 'MMMM dd, yyyy')}
+														</time>
+													</div>
+													<h2
+														className="text-xl font-semibold text-indigo-600 group-hover:text-gray-600"
+													>
+														{post.title}
+													</h2>
+													{post.excerpt && <p className="leading-relaxed text-gray-600 text-sm dark:text-gray-400">{post.excerpt}...</p>}
+													<div 
+														className="mt-2 flex items-center flex-wrap group">
+														<span
+															className="text-base text-md font-semibold "
+														>
+															Read full story 
+														</span>
+														<Icon name="arrow-right" className="w-4 h-4" />
+													</div>
+												</Link>
+											</div>
+										))}
+									</>}
+								</Await>
+							</Suspense> 							
 						</div>
 					</div>
 

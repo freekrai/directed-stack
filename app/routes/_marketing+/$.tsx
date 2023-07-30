@@ -1,8 +1,6 @@
 import type {
-	LinksFunction,
 	LoaderArgs,
 	V2_MetaFunction,
-	SerializeFrom,
 } from "@vercel/remix";
 
 import { json, redirect } from "@vercel/remix";
@@ -15,8 +13,7 @@ import { parseMarkdown } from "~/utils/md.server";
 import { readBySlug } from '~/services/directus.server'
 
 import { removeTrailingSlash } from '~/utils'
-
-import ErrorPage from '~/components/errorPage'
+import { jsonHash } from 'remix-utils';
 import Container from '~/components/layout/Container'
 
 import getSeo from '~/seo';
@@ -52,10 +49,10 @@ export async function loader ({request, params}: LoaderArgs) {
 		})
 	}    
 
-	let body = parseMarkdown(page.body);
-
-	return json({ 
-		body, 
+	return jsonHash({ 
+		async body () {
+			return parseMarkdown(page.body);
+		}, 
 		meta: {
 			title: page.title
 		},

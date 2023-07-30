@@ -1,21 +1,18 @@
 import type {
-	LinksFunction,
 	LoaderArgs,
 	V2_MetaFunction,
-	SerializeFrom,
 } from "@vercel/remix";
 import { parseISO, format } from 'date-fns';
-import calculateReadingTime from 'reading-time'
-
-import { json, redirect } from "@vercel/remix";
+import { redirect, json } from "@vercel/remix";
 import { useLoaderData } from "@remix-run/react";
 
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 import { CacheControl } from "~/utils/cache-control.server";
 import { readBySlug, getAssetURL } from '~/services/directus.server'
-
+import { jsonHash } from 'remix-utils';
 import Container from '~/components/layout/Container'
+import { readingTime } from '~/utils';
 
 import getSeo from '~/seo';
 
@@ -39,19 +36,32 @@ export async function loader({ request, context, params }: LoaderArgs) {
 	try {
 		const post = await readBySlug("posts", path, 'published');
 
-		const readTime = calculateReadingTime(post.body);
-        let body = parseMarkdown(post.body);
-		const photo = post.image ? getAssetURL(post.image) : null;
-
-		return json({ 
-			body,
-			meta: {
-				title: post.title,
-				description: post.excerpt,
-				createdAt: post.created_at,
-				author: `${post.author.first_name} ${post.author.last_name}`,
-				photo: photo,
-				readTime: readTime,
+		if (!post) {
+			throw json({}, {
+				status: 404, headers:  {}
+			})
+		}    
+	
+		// jsonHash lets us define functions directly in the json, reducing the need to create extra functions and variables.
+		return jsonHash({ 
+			post,
+			async body() {
+				return parseMarkdown(post.body)
+			},
+			async photo() {
+				return post.image ? getAssetURL(post.image) : null;
+			},
+			async readTime() {
+				return readingTime(post.body);
+			},
+			async meta() {
+				return {
+					title: post.title,
+					description: post.excerpt,
+					createdAt: post.created_at,
+					published: post.published,
+					author: `${post.author.first_name} ${post.author.last_name}`,
+				}
 			}
 		}, {
 			headers: {
@@ -65,7 +75,7 @@ export async function loader({ request, context, params }: LoaderArgs) {
 
 
 export default function Article() {
-	let { body, meta } = useLoaderData<typeof loader>();
+	let { body, photo, readTime, meta } = useLoaderData<typeof loader>();
 
 	return (
 		<Container>
@@ -76,18 +86,19 @@ export default function Article() {
 						<p className="text-sm text-gray-700 dark:text-gray-300">
 							{meta.author}
 							{' • '}
-							{meta.createdAt && format(parseISO(meta.createdAt), 'MMMM dd, yyyy')}
+							{meta.published && format(parseISO(meta.published), 'MMMM dd, yyyy')}
 						</p>
 					</div>
 					<p className="mt-2 text-sm text-gray-600 dark:text-gray-400 min-w-32 md:mt-0">
-            			{meta.readTime.text}
+            			{readTime && <>{readTime} min read</>}
           			</p>
 				</div>
-				{meta.photo && <div className="my-2">
-				<img 
-					className="w-full rounded-lg shadow-lg object-cover object-center"
-					src={meta.photo}
-				/>
+				{photo && <div className="my-2">
+					<img 
+						className="w-full rounded-lg shadow-lg object-cover object-center"
+						src={photo}
+						alt={meta.title}
+					/>
 				</div>}
 				<div className="w-full mt-4 prose dark:prose-dark max-w-none">
 					<MarkdownView content={body} />

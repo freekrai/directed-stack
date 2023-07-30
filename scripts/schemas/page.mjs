@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
-dotenv.config({ path: './.env' });
-
 import { build } from "new-directus-schema-builder-kit"
+
+dotenv.config({ path: './.env' });
 
 const model = build((builder) => {
     const pages = builder.collection("pages").sort("order").archive("status", "archived", "draft").accountability("all")
