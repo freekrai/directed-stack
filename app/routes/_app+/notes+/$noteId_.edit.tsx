@@ -32,7 +32,9 @@ import type {
           }
           return json({ note});
       }
-      return json({});
+      return json({
+        note: {},
+      });
   }
   
   export async function action({ request, params }: ActionArgs) {

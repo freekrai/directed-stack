@@ -55,7 +55,7 @@ export async function action({ request, params }: ActionArgs) {
 }
 
 export default function NoteDetailsPage() {
-  const { note } = useLoaderData<typeof loader>();
+  const { body, note } = useLoaderData<typeof loader>();
 	const doubleCheckDeleteNote = useDoubleCheck()
   return (
     <div>
@@ -66,7 +66,7 @@ export default function NoteDetailsPage() {
         Last Updated: {note.updated_at && format(parseISO(note.updated_at), 'MMMM dd, yyyy')}
       </div>
 			<article className="w-full prose dark:prose-dark max-w-none">
-				<MarkdownView content={data.body} />
+				<MarkdownView content={body} />
 			</article>
       <hr className="my-4" />
       <div className="flex spacing-y-4">
