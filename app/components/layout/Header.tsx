@@ -39,7 +39,7 @@ export default function Header() {
                     <a 
                         href="https://github.com/freekrai/directed-stack" 
                         target="_blank"
-                        className="text-gray-500 dark:text-gray-200 px-3 py-2 font-medium text-sm hover:text-blue-700 dark:hover:text-blue-500"
+                        className="text-gray-500 dark:text-gray-200 px-3 py-2 font-medium text-sm hover:text-blue-700 dark:hover:text-blue-500" rel="noreferrer"
                     >
                         <svg fill="currentColor" viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
                             <path

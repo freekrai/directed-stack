@@ -4,6 +4,9 @@ import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";
 
 import { isAuthenticated, getDirectusClient, createItem } from "~/auth.server";
+import MarkdownInput from "~/components/core/ui/MarkdownInput";
+import useLocalStorage from "~/hooks/useLocalStorage";
+
 
 export async function action({ request }: ActionArgs) {
     const userAuthenticated = await isAuthenticated(request, true);
@@ -53,6 +56,8 @@ export default function NewNotePage() {
   const titleRef = React.useRef<HTMLInputElement>(null);
   const bodyRef = React.useRef<HTMLTextAreaElement>(null);
 
+  const [content, setContent] = useLocalStorage("new-note", "");
+
   React.useEffect(() => {
     if (actionData?.errors?.title) {
       titleRef.current?.focus();
@@ -94,16 +99,20 @@ export default function NewNotePage() {
       <div>
         <label className="flex w-full flex-col gap-1">
           <span>Body: </span>
-          <textarea
-            ref={bodyRef}
-            name="body"
-            rows={8}
-            className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
-            aria-invalid={actionData?.errors?.body ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.body ? "body-error" : undefined
-            }
-          />
+          <div className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6">
+            <MarkdownInput
+              className="col-span-12"
+              rows={6}
+              editor="monaco"
+              editorLanguage="markdown"
+              editorTheme="vs-dark"
+              editorSize="screen"
+              editorFontSize={14}
+              name="body"
+              value={content}
+              setValue={(e) => setContent(e.toString())}
+            /> 
+          </div>
         </label>
         {actionData?.errors?.body && (
           <div className="pt-1 text-red-700" id="body-error">

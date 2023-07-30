@@ -10,16 +10,8 @@ import * as React from "react";
 
 import { isAuthenticated } from "~/auth.server";
 import { CacheControl } from "~/utils/cache-control.server";
-import Container from '~/components/layout/Container'
 
 import getSeo from '~/seo';
-
-type IndexData = {
-    token?: string;
-    user: {
-        email?: string;
-    }
-};
 
 export const meta: V2_MetaFunction = ({ data, matches }) => {
 	//if(!data) return [];
@@ -68,25 +60,25 @@ export default function Dashboard() {
     let {user} = useLoaderData<typeof loader>();
     const transition = useNavigation();
 
-return (
-    <Container>
-        <div className="flex flex-col justify-center items-start w-full max-w-4xl border-gray-200 dark:border-gray-700 mx-auto pb-16">
-            <h2 className="text-3xl font-light">
-            Welcome{" "}<strong className="font-bold">{user?.email}</strong>,
-            </h2>
-            <Form action="/signout" method="get">
-                <button
-                    type="submit"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-3"
-                    aria-live="polite"
-                    disabled={
-                        transition.state !== "idle"
-                    }
-                >
-                    {transition.state !== "idle" ? "👋" : "Sign out"}
-                </button>
-            </Form>
-        </div>
-    </Container>
-);
+    return (
+        <>
+            <div className="flex flex-col justify-center items-start w-full max-w-4xl border-gray-200 dark:border-gray-700 mx-auto pb-16">
+                <h2 className="text-3xl font-light">
+                Welcome{" "}<strong className="font-bold">{user?.email}</strong>,
+                </h2>
+                <Form action="/signout" method="get">
+                    <button
+                        type="submit"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-3"
+                        aria-live="polite"
+                        disabled={
+                            transition.state !== "idle"
+                        }
+                    >
+                        {transition.state !== "idle" ? "👋" : "Sign out"}
+                    </button>
+                </Form>
+            </div>
+        </>
+    );
 }

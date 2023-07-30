@@ -1,0 +1,1 @@
+core components are used for the internal UI of the app, such as sites, etc

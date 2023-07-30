@@ -1,17 +1,17 @@
 import type { 
   ActionArgs, 
   LoaderArgs, 
-  V2_MetaFunction, 
-  ActionFunction, 
-  LoaderFunction 
 } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
-import { Form, Link, useLoaderData, useActionData, useFormAction, useNavigation} from "@remix-run/react";
+import { Form, useLoaderData, useActionData, useFormAction, useNavigation} from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 //import { deleteNote, getNote } from "~/models/note.server";
-import { isAuthenticated, getDirectusClient, readOne, updateItem, updateOne } from "~/auth.server";
+import { isAuthenticated, getDirectusClient, readOne, updateItem } from "~/auth.server";
 import * as React from "react";
+
+import MarkdownInput from "~/components/core/ui/MarkdownInput";
+import useLocalStorage from "~/hooks/useLocalStorage";
 
 export async function loader({ request, params }: LoaderArgs) {
     invariant(params.noteId, "noteId not found");
@@ -88,6 +88,8 @@ export default function NoteDetailsPage() {
   const titleRef = React.useRef<HTMLInputElement>(null);
   const bodyRef = React.useRef<HTMLTextAreaElement>(null);
 
+  const [content, setContent] = useLocalStorage(data.note.id, data.note.body);
+
   const isSubmitting = navigation.state === 'submitting' && navigation.formAction === formAction && navigation.formMethod === 'POST'
 
   React.useEffect(() => {
@@ -132,17 +134,20 @@ export default function NoteDetailsPage() {
       <div>
         <label className="flex w-full flex-col gap-1">
           <span>Body: </span>
-          <textarea
-            ref={bodyRef}
-            name="body"
-            rows={8}
-            className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
-            aria-invalid={actionData?.errors?.body ? true : undefined}
-            aria-errormessage={
-              actionData?.errors?.body ? "body-error" : undefined
-            }
-            defaultValue={data.note.body}
-          />
+          <div className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6">
+            <MarkdownInput
+              className="col-span-12"
+              rows={6}
+              editor="monaco"
+              editorLanguage="markdown"
+              editorTheme="vs-dark"
+              editorSize="screen"
+              editorFontSize={14}
+              name="body"
+              value={content}
+              setValue={(e) => setContent(e.toString())}
+            />
+          </div>    
         </label>
         {actionData?.errors?.body && (
           <div className="pt-1 text-red-700" id="body-error">
@@ -168,14 +173,4 @@ export function ErrorBoundary({ error }: { error: Error }) {
   console.error(error);
 
   return <div>An unexpected error occurred: {error.message}</div>;
-}
-
-export function CatchBoundary() {
-  const caught = useCatch();
-
-  if (caught.status === 404) {
-    return <div>Note not found</div>;
-  }
-
-  throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }
