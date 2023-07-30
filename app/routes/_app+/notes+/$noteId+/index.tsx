@@ -1,5 +1,5 @@
 import type { ActionArgs, LoaderArgs } from "@vercel/remix";
-import { json, redirect } from "@vercel/remix";
+import { redirect } from "@vercel/remix";
 import { 
   Link, 
   Form, 
@@ -7,7 +7,7 @@ import {
 } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { parseISO, format } from 'date-fns';
-
+import { CacheControl } from "~/utils/cache-control.server";
 import { 
   isAuthenticated, 
   getDirectusClient, 
@@ -18,6 +18,8 @@ import { Button } from '~/components/core/ui/button'
 import { Icon} from '~/components/icons'
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
+
+import { jsonHash } from 'remix-utils'
 
 import {
   cn, useDoubleCheck
@@ -31,18 +33,26 @@ export async function loader({ request, params }: LoaderArgs) {
         return redirect("/signin");
     }
 
-    const {user, token} = userAuthenticated;
+    const {token} = userAuthenticated;
 
-    if( token ) {
-        await getDirectusClient({ token })
-        const note = await readOne("notes", params.noteId);
-        if (!note) {
-            throw new Response("Not Found", { status: 404 });
-        }
-        let body = parseMarkdown(note.body);
-        return json({ note, body });
+    await getDirectusClient({ token })
+
+    const note = await readOne("notes", params.noteId);
+    
+    if (!note) {
+        throw new Response("Not Found", { status: 404 });
     }
-    return json({});
+    
+    return jsonHash({ 
+      note,
+      async body () {
+        return parseMarkdown(note.body);
+      }
+    }, {
+			headers: {
+				"Cache-Control": new CacheControl("swr").toString() 
+			},
+		});  
 }
 
 export async function action({ request, params }: ActionArgs) {
@@ -108,10 +118,4 @@ export default function NoteDetailsPage() {
       </div>
     </div>
   );
-}
-
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
-
-  return <div>An unexpected error occurred: {error.message}</div>;
 }
