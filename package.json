@@ -17,8 +17,6 @@
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
     "@markdoc/markdoc": "^0.3.0",
-    "@monaco-editor/react": "^4.5.1",
-    "@primer/octicons": "^19.5.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-aspect-ratio": "^1.0.3",

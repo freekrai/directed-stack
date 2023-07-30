@@ -1,29 +1,13 @@
 import type { DataFunctionArgs } from "@vercel/remix";
-
-import octicons from "@primer/octicons";
+//import type { iconNames } from "~/components/icons/icons.json"
+import spriteHref from "~/components/icons/icon.svg"
 
 export async function loader({ request }: DataFunctionArgs) {
 	let url = new URL(request.url);
 
-	let iconNames = url.searchParams.getAll("name");
-
-	let icons: { name: string; svg: string }[] = [];
-
-	for (let name of iconNames) {
-		let icon = octicons[name as keyof typeof octicons];
-		if (icon) icons.push({ name, svg: icon.toSVG() });
-	}
-
-	let symbols = icons
-		.map(({ name, svg }) => {
-			return svg
-				.replace(/^<svg/, '<symbol id="' + name + '"')
-				.replace(/svg>$/, "symbol>");
-		})
-		.join("\n");
-
-	let body = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <defs>${symbols}</defs></svg>`;
+	let name = url.searchParams.getAll("name");
+	
+	let body = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="${spriteHref}#${name}" /></svg>`;
 
 	return new Response(body, {
 		headers: {

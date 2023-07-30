@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { getSelection } from "./get-selection";
 import { useUpdate, useElement } from "./use-editor";
+import { Icon } from '~/components/icons';
 
 export namespace Button {
 	type MenuItemProps = {
@@ -70,7 +71,7 @@ export namespace Button {
 				updater={(selected) => `- ${selected}`}
 				handler={({ start, end }) => ({ start: 1 + start, end: end + 1 })}
 			>
-				<Icon name="list-unordered" />
+				<Icon name="list" />
 			</MenuItem>
 		);
 	}
@@ -103,7 +104,7 @@ export namespace Button {
 				updater={(selected) => `\`\`\`\n${selected}\n\`\`\``}
 				handler={({ start, end }) => ({ start: 1 + start, end: end + 1 })}
 			>
-				<Icon name="code-square" />
+				<Icon name="square-code" />
 			</MenuItem>
 		);
 	}
@@ -114,7 +115,7 @@ export namespace Button {
 				updater={(selected) => `   ${selected}`}
 				handler={({ start, end }) => ({ start: 1 + start, end: end + 1 })}
 			>
-				<Icon name="move-to-end" />
+				<Icon name="indent" />
 			</MenuItem>
 		);
 	}
@@ -139,14 +140,6 @@ export namespace Button {
 			>
 				<Icon name="image" />
 			</MenuItem>
-		);
-	}
-
-	function Icon({ name }: { name: string }) {
-		return (
-			<svg width={16} height={16}>
-				<use href={`/icons?name=${name}#${name}`} />
-			</svg>
 		);
 	}
 }
