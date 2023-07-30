@@ -1,10 +1,19 @@
 import type { ActionArgs, LoaderArgs } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
-import { Link, Form, useFetcher, useLoaderData } from "@remix-run/react";
+import { 
+  Link, 
+  Form, 
+  useLoaderData 
+} from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { parseISO, format } from 'date-fns';
 
-import { isAuthenticated, getDirectusClient, readOne, deleteOne } from "~/auth.server";
+import { 
+  isAuthenticated, 
+  getDirectusClient, 
+  readOne, 
+  deleteOne 
+} from "~/auth.server";
 import { Button } from '~/components/core/ui/button'
 import { Icon} from '~/components/icons'
 import { MarkdownView } from "~/components/markdown";
@@ -57,6 +66,7 @@ export async function action({ request, params }: ActionArgs) {
 export default function NoteDetailsPage() {
   const { body, note } = useLoaderData<typeof loader>();
 	const doubleCheckDeleteNote = useDoubleCheck()
+
   return (
     <div>
       <h3 className="text-2xl font-bold">{note.title}</h3>
