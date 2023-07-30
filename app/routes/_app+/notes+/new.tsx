@@ -103,6 +103,20 @@ export default function NewNotePage() {
             onChange={handleChange}
             hidePreview={hidePreview}
           />
+          <div className="flex-1 mt-2 rounded-md border border-neutral-300 bg-gray-100 p-4">
+            {hidePreview ? <button
+              type="button"
+              name="showModel"
+              onClick={()=>setHidePreview(false)}
+              className="ml-5 rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
+            >Show Preview</button> : 
+            <button
+              type="button"
+              name="showModel"
+              onClick={()=>setHidePreview(true)}
+              className="ml-5 rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
+            >Hide Preview</button>}
+          </div>          
         </label>
         {actionData?.errors?.body && (
           <div className="pt-1 text-red-700" id="body-error">

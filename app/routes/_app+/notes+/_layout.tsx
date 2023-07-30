@@ -7,45 +7,35 @@ import { CacheControl } from "~/utils/cache-control.server";
 
 export async function loader ({request}: LoaderArgs) {
     let errors = {};
-    try {
-        const userAuthenticated = await isAuthenticated(request, true);
-        if (!userAuthenticated) {
-            return redirect("/signin");
-        }
-
-        const {user, token} = userAuthenticated;
-        await getDirectusClient({ token });
-        if( token ) {
-            const notes = await readByQuery("notes", {
-                filter: {
-                  created_by: {
-                    '_eq': user.id
-                  }
-                },
-                offset: 0,
-                limit: -1,
-                fields: ["*.*"],
-                sort: "-updated_at",
-            });
-
-            return json({ 
-                title: "Dashboard",
-                user, 
-                notes: notes || [],
-            }, {
-                headers: {
-                    "Cache-Control": new CacheControl("swr").toString() 
-                },
-            });    
-        }
-    } catch (error) {
-        console.log("error", error);
-        return json({ 
-            user: null,
-            notes: null,
-            errors 
-        }, { status: 500 });
+    const userAuthenticated = await isAuthenticated(request, true);
+    if (!userAuthenticated) {
+        return redirect("/signin");
     }
+
+    const {user, token} = userAuthenticated;
+    await getDirectusClient({ token });
+
+    const notes = await readByQuery("notes", {
+        filter: {
+          created_by: {
+            '_eq': user.id
+          }
+        },
+        offset: 0,
+        limit: -1,
+        fields: ["*.*"],
+        sort: "-updated_at",
+    });
+
+    return json({ 
+        title: "Dashboard",
+        user, 
+        notes: notes || [],
+    }, {
+        headers: {
+            "Cache-Control": new CacheControl("swr").toString() 
+        },
+    });    
 }
 export default function NotesPage() {
   const {user, notes} = useLoaderData<typeof loader>();
@@ -63,7 +53,7 @@ export default function NotesPage() {
             <p className="p-4">No notes yet</p>
           ) : (
             <ol>
-              {notes.map((note) => (
+              {notes.map((note: any) => (
                 <li key={note.id}>
                   <NavLink
                     className={({ isActive }) =>
