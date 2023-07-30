@@ -3,10 +3,7 @@ import { json, redirect } from "@vercel/remix";
 import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";
 
-import { isAuthenticated, getDirectusClient, createItem } from "~/auth.server";
-import MarkdownInput from "~/components/core/ui/MarkdownInput";
-import useLocalStorage from "~/hooks/useLocalStorage";
-
+import { isAuthenticated, getDirectusClient, createOne } from "~/auth.server";
 
 export async function action({ request }: ActionArgs) {
     const userAuthenticated = await isAuthenticated(request, true);
@@ -17,7 +14,7 @@ export async function action({ request }: ActionArgs) {
     const {user, token} = userAuthenticated;
 
     if( token ) {
-        const directus = await getDirectusClient({ token })
+        await getDirectusClient({ token })
 
         const formData = await request.formData();
         const title = formData.get("title");
@@ -36,16 +33,11 @@ export async function action({ request }: ActionArgs) {
             { status: 400 }
             );
         }
-        const note = await directus.request(
-          createItem(
-            'notes', 
-            {
-              title,
-              body,
-              status: 'published'  
-            }
-          )
-        );
+        const note = await createOne('notes', {
+          title,
+          body,
+          status: 'published'  
+        });
         return redirect(`/notes/${note?.id}`);
     }
     return redirect("/notes")
@@ -55,8 +47,6 @@ export default function NewNotePage() {
   const actionData = useActionData<typeof action>();
   const titleRef = React.useRef<HTMLInputElement>(null);
   const bodyRef = React.useRef<HTMLTextAreaElement>(null);
-
-  const [content, setContent] = useLocalStorage("new-note", "");
 
   React.useEffect(() => {
     if (actionData?.errors?.title) {
@@ -99,20 +89,16 @@ export default function NewNotePage() {
       <div>
         <label className="flex w-full flex-col gap-1">
           <span>Body: </span>
-          <div className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6">
-            <MarkdownInput
-              className="col-span-12"
-              rows={6}
-              editor="monaco"
-              editorLanguage="markdown"
-              editorTheme="vs-dark"
-              editorSize="screen"
-              editorFontSize={14}
-              name="body"
-              value={content}
-              setValue={(e) => setContent(e.toString())}
-            /> 
-          </div>
+          <textarea
+            ref={bodyRef}
+            name="body"
+            rows={8}
+            className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
+            aria-invalid={actionData?.errors?.body ? true : undefined}
+            aria-errormessage={
+              actionData?.errors?.body ? "body-error" : undefined
+            }
+          />
         </label>
         {actionData?.errors?.body && (
           <div className="pt-1 text-red-700" id="body-error">

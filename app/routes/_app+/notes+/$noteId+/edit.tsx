@@ -7,11 +7,8 @@ import { Form, useLoaderData, useActionData, useFormAction, useNavigation} from 
 import invariant from "tiny-invariant";
 
 //import { deleteNote, getNote } from "~/models/note.server";
-import { isAuthenticated, getDirectusClient, readOne, updateItem } from "~/auth.server";
+import { isAuthenticated, getDirectusClient, readOne, updateOne } from "~/auth.server";
 import * as React from "react";
-
-import MarkdownInput from "~/components/core/ui/MarkdownInput";
-import useLocalStorage from "~/hooks/useLocalStorage";
 
 export async function loader({ request, params }: LoaderArgs) {
     invariant(params.noteId, "noteId not found");
@@ -24,7 +21,7 @@ export async function loader({ request, params }: LoaderArgs) {
     const {user, token} = userAuthenticated;
 
     if( token ) {
-        const directus = await getDirectusClient({ token })
+        await getDirectusClient({ token })
         const note = await readOne("notes", params.noteId);
         if (!note) {
             throw new Response("Not Found", { status: 404 });
@@ -42,10 +39,10 @@ export async function action({ request, params }: ActionArgs) {
         return redirect("/signin");
     }
 
-    const {user, token} = userAuthenticated;
+    const {token} = userAuthenticated;
 
     if( token ) {
-        const directus = await getDirectusClient({ token })
+        await getDirectusClient({ token })
 
         const formData = await request.formData();
         const title = formData.get("title");
@@ -64,16 +61,10 @@ export async function action({ request, params }: ActionArgs) {
             { status: 400 }
             );
         }
-        await directus.request(
-          updateItem(
-            'notes', 
-            params.noteId, 
-            {
-              title,
-              body
-            }
-          )
-        );
+        updateOne('notes', params.noteId, {
+            title,
+            body
+        });
         return redirect(`/notes/${params.noteId}`);
     }
     return redirect("/notes")
@@ -87,8 +78,6 @@ export default function NoteDetailsPage() {
   const actionData = useActionData<typeof action>();
   const titleRef = React.useRef<HTMLInputElement>(null);
   const bodyRef = React.useRef<HTMLTextAreaElement>(null);
-
-  const [content, setContent] = useLocalStorage(data.note.id, data.note.body);
 
   const isSubmitting = navigation.state === 'submitting' && navigation.formAction === formAction && navigation.formMethod === 'POST'
 
@@ -134,20 +123,18 @@ export default function NoteDetailsPage() {
       <div>
         <label className="flex w-full flex-col gap-1">
           <span>Body: </span>
-          <div className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6">
-            <MarkdownInput
-              className="col-span-12"
-              rows={6}
-              editor="monaco"
-              editorLanguage="markdown"
-              editorTheme="vs-dark"
-              editorSize="screen"
-              editorFontSize={14}
-              name="body"
-              value={content}
-              setValue={(e) => setContent(e.toString())}
-            />
-          </div>    
+          <textarea
+            ref={bodyRef}
+            name="body"
+            rows={8}
+            className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
+            aria-invalid={actionData?.errors?.body ? true : undefined}
+            aria-errormessage={
+              actionData?.errors?.body ? "body-error" : undefined
+            }
+            defaultValue={data.note.body}
+          />
+
         </label>
         {actionData?.errors?.body && (
           <div className="pt-1 text-red-700" id="body-error">
