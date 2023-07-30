@@ -55,6 +55,10 @@ export async function loader({ request, params }: LoaderArgs) {
 		});  
 }
 
+export const handle = {
+	id: 'dashboard',
+}   
+
 export async function action({ request, params }: ActionArgs) {
   invariant(params.noteId, "noteId not found");
 
