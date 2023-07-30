@@ -72,7 +72,7 @@ export default function NotesPage() {
                     prefetch="intent"
                     to={note.id}
                   >
-                    📝 {note.title}
+                    {note.title}
                   </NavLink>
                 </li>
               ))}
