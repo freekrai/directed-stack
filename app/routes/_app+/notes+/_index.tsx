@@ -63,7 +63,7 @@ export default function Dashboard() {
         <>
             <div className="flex flex-col justify-center items-start w-full max-w-4xl border-gray-200 dark:border-gray-700 mx-auto pb-16">
                 <h2 className="text-3xl font-light">
-                    Select a note to view or edit, or <Link to="/notes/new">Create a new note</Link>
+                    Select a note to view or edit, or <Link to="/notes/new" className="text-blue-600">Create a new note</Link>
                 </h2>
             </div>
         </>

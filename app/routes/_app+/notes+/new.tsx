@@ -92,7 +92,7 @@ export default function NewNotePage() {
           <textarea
             ref={bodyRef}
             name="body"
-            rows={8}
+            rows={12}
             className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
             aria-invalid={actionData?.errors?.body ? true : undefined}
             aria-errormessage={

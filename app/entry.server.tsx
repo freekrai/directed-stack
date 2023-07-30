@@ -2,10 +2,6 @@ import type { EntryContext } from "@vercel/remix";
 import { RemixServer } from "@remix-run/react";
 import { renderToString } from "react-dom/server";
 
-if (process.env.NODE_ENV === 'production' && process.env.SENTRY_DSN) {
-  import('~/utils/monitoring.server').then(({ init }) => init())
-}
-
 export default function handleRequest(
   request: Request,
   responseStatusCode: number,
