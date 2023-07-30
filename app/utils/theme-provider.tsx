@@ -72,7 +72,7 @@ function ThemeProvider({
 
     persistThemeRef.current.submit(
       { theme },
-      { action: "action/set-theme", method: "post" }
+      { action: "resources/set-theme", method: "post" }
     );
   }, [theme]);
 

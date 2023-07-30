@@ -162,8 +162,13 @@ export async function login({
   email: string;
   password: string;
 }) {
-  const user = await directus.login(email, password);
-  return user
+  try {
+    const user = await directus.login(email, password, { mode: 'cookie' });
+    if( !user ) throw new Error("Invalid email or password");
+    return user;
+  } catch(e){
+    throw new Error("Invalid email or password");
+  }
 }
 
 export async function logout(request: Request) {

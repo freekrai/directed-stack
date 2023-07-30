@@ -10,7 +10,7 @@ npx create-remix --template freekrai/directed-stack
 
 ## What's in the stack
 
-- Healthcheck endpoint
+- Healthcheck endpoint (/api/healthcheck)
 - Email/Password Authentication with [cookie-based sessions](https://remix.run/docs/en/v1/api/remix#createcookiesessionstorage)
 - [Directus](https://directus.io) handling auth, blog, pages, and backend storage
 - Styling with [Tailwind](https://tailwindcss.com/)
