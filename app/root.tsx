@@ -33,6 +33,7 @@ import { getThemeSession } from "~/utils/theme.server";
 
 import {removeTrailingSlash, getDomainUrl } from '~/utils';
 import { isAuthenticated } from "~/auth.server";
+import iconHref from "~/components/icons/icon.svg"
 
 import tailwindStyles from "~/tailwind.css";
 
@@ -52,6 +53,12 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "//fonts.gstatic.com", crossOrigin: "anonymous" },
+  {
+    rel: "preload",
+    href: iconHref,
+    as: "image",
+    type: "image/svg+xml",
+  },
   {rel: "stylesheet", href: tailwindStyles},
   { rel: "stylesheet", href: "//fonts.googleapis.com/css?family=Work+Sans:300,400,600,700&amp;lang=en" },
 ]
