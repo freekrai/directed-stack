@@ -124,30 +124,32 @@ export function NoteEditor({
 				errors={fields.title.errors}
 				className="flex flex-col gap-y-2"
 			/>
-            <Editor 
-                content={markup}
-                onChange={handleChange}
-                hidePreview={hidePreview}
-            />
-            <div className="flex-1 mt-2 rounded-md border border-neutral-300 bg-gray-100 p-4">
-                {hidePreview ? <button
-                    type="button"
-                    name="showModel"
-                    onClick={()=>setHidePreview(false)}
-                    className="ml-5 rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
-                >
-                    <Icon name="eye" />
-                    Show Preview
-                </button> : 
-                <button
-                    type="button"
-                    name="showModel"
-                    onClick={()=>setHidePreview(true)}
-                    className="ml-5 rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
-                >
-                    <Icon name="eye-off" />
-                    Hide Preview
-                </button>}
+            <div>
+                <Editor 
+                    content={markup}
+                    onChange={handleChange}
+                    hidePreview={hidePreview}
+                />
+                <div className="flex-1 mt-2 rounded-md border border-neutral-300 bg-gray-100 p-4">
+                    {hidePreview ? <button
+                        type="button"
+                        name="showModel"
+                        onClick={()=>setHidePreview(false)}
+                        className="ml-5 rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
+                    >
+                        <Icon name="eye" />
+                        Show Preview
+                    </button> : 
+                    <button
+                        type="button"
+                        name="showModel"
+                        onClick={()=>setHidePreview(true)}
+                        className="ml-5 rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
+                    >
+                        <Icon name="eye-off" />
+                        Hide Preview
+                    </button>}
+                </div>
             </div>
 			<ErrorList errors={form.errors} id={form.errorId} />
 			<div className="pt-5">

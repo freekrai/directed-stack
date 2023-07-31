@@ -26,12 +26,6 @@ export function Editor({ content="", onChange, hidePreview=false}: {content: str
 	}, [dispatch, state]);
 
 	useEffect(() => {
-/*		
-		submit(
-			{ content: stateValue },
-			{ action: "/components/editor", method: "post" }
-		);
-*/		
 		onChange(stateValue);		
 	}, [onChange, stateValue]);
 
