@@ -51,6 +51,7 @@
     "classnames": "^2.3.2",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
+    "isbot": "latest",
     "marked": "^5.1.2",
     "prism-react-renderer": "^2.0.6",
     "react": "^18.2.0",
