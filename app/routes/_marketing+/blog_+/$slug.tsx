@@ -3,12 +3,10 @@ import type {
 	V2_MetaFunction,
 } from "@vercel/remix";
 import { parseISO, format } from 'date-fns';
-import { redirect, json } from "@vercel/remix";
 import { useLoaderData } from "@remix-run/react";
 
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
-import { CacheControl } from "~/utils/cache-control.server";
 import { readBySlug, getAssetURL } from '~/services/directus.server'
 import { jsonHash } from 'remix-utils';
 import Container from '~/components/layout/Container'
@@ -32,20 +30,14 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
 }
 
 export async function loader({ request, context, params }: LoaderArgs) {
-	let path = params["slug"];
+	if (!params.slug) {
+		throw new Error('params.slug is not defined')
+	}
 
-	if (!path) {
-		throw json({}, {
-			status: 404, headers:  {}
-		})
-    }
-
-	const post = await readBySlug("posts", path, 'published');
+	const post = await readBySlug("posts", params.slug);
 
 	if (!post) {
-		throw json({}, {
-			status: 404, headers:  {}
-		})
+		throw new Response('Not found', { status: 404 })
 	}    
 
 	// jsonHash lets us define functions directly in the json, reducing the need to create extra functions and variables.

@@ -3,7 +3,6 @@ import type {
 	V2_MetaFunction,
 } from "@vercel/remix";
 
-import { json, redirect } from "@vercel/remix";
 import { useLoaderData } from "@remix-run/react";
 
 import { CacheControl } from "~/utils/cache-control.server";
@@ -12,7 +11,6 @@ import { parseMarkdown } from "~/utils/md.server";
 
 import { readBySlug } from '~/services/directus.server'
 
-import { removeTrailingSlash } from '~/utils'
 import { jsonHash } from 'remix-utils';
 import Container from '~/components/layout/Container'
 
@@ -34,22 +32,15 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
 }
 
 export async function loader ({request, params}: LoaderArgs) {
-	let apath = params["*"];
-	if (!apath) return redirect("/");
-
-	if (!apath) {
+	if (!params.page) {
 		throw new Error('params.slug is not defined')
 	}
-	
-	let path = removeTrailingSlash(apath)?.split("/").slice(-1).toString();
-	
-	const page = await readBySlug("pages", path, 'published');
-	
+
+	const page = await readBySlug("pages", params.page);
+
 	if (!page) {
-		throw json({}, {
-			status: 404, headers:  {}
-		})
-	}    
+		throw new Response('Not found', { status: 404 })
+	}
 
 	return jsonHash({ 
 		async body () {
