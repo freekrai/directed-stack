@@ -59,7 +59,7 @@ export async function loader({ request, context }: LoaderArgs) {
         offset,
         limit,
         fields: ["*.*"],
-        //sort: ["-created"],
+        sort: "-published",
     });
 
     let meta = {

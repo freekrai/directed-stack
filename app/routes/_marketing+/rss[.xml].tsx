@@ -2,15 +2,7 @@ import type {LoaderArgs} from '@vercel/remix'
 import { add, parseISO, format } from 'date-fns';
 import {getDomainUrl} from '~/utils/'
 
-import {getDirectusClient, readByQuery } from '~/services/directus.server';
-
-type Post = {
-  attributes: { 
-    slug: string; 
-    title: string; 
-  }; 
-  id: number 
-}
+import { readByQuery } from '~/services/directus.server';
 
 function cdata(s: string) {
   return `<![CDATA[${s}]]>`
@@ -28,8 +20,7 @@ export const loader = async ({request}: LoaderArgs) => {
         offset: 0,
         limit: 10,
         fields: ["*.*"],
-        meta: 'total_count',
-        //sort: ["-created"],
+        sort: "-published",
     });
 
     const rss = `
