@@ -7,6 +7,8 @@ import { useOptionalUser } from "~/utils";
 import { Icon } from '~/components/icons';
 import getSeo from '~/seo';
 
+//export const config = { runtime: 'edge' };
+
 export const meta: V2_MetaFunction = ({ data, matches }) => {
 	if(!data) return [];
 	//let { meta } = data as SerializeFrom<typeof loader>;

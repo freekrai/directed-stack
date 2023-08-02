@@ -16,6 +16,8 @@ import { readingTime } from '~/utils';
 
 import getSeo from '~/seo';
 
+//export const config = { runtime: 'edge' };
+
 export const meta: V2_MetaFunction = ({ data, matches }) => {
 	if(!data) return [];
 	//let { meta } = data as SerializeFrom<typeof loader>;
@@ -30,7 +32,7 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
 }
 
 export async function loader({ request, context, params }: LoaderArgs) {
-	let path = params["*"];
+	let path = params["slug"];
 	if (!path) return redirect("/blog");
 
 	try {
