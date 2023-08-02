@@ -33,48 +33,48 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
 
 export async function loader({ request, context, params }: LoaderArgs) {
 	let path = params["slug"];
-	if (!path) return redirect("/blog");
 
-	try {
-		const post = await readBySlug("posts", path, 'published');
+	if (!path) {
+		throw json({}, {
+			status: 404, headers:  {}
+		})
+    }
 
-		if (!post) {
-			throw json({}, {
-				status: 404, headers:  {}
-			})
-		}    
-	
-		// jsonHash lets us define functions directly in the json, reducing the need to create extra functions and variables.
-		return jsonHash({ 
-			post,
-			async body() {
-				return parseMarkdown(post.body)
-			},
-			async photo() {
-				return post.image ? getAssetURL(post.image) : null;
-			},
-			async readTime() {
-				return readingTime(post.body);
-			},
-			async meta() {
-				return {
-					title: post.title,
-					description: post.excerpt,
-					createdAt: post.created_at,
-					published: post.published,
-					author: `${post.author.first_name} ${post.author.last_name}`,
-				}
+	const post = await readBySlug("posts", path, 'published');
+
+	if (!post) {
+		throw json({}, {
+			status: 404, headers:  {}
+		})
+	}    
+
+	// jsonHash lets us define functions directly in the json, reducing the need to create extra functions and variables.
+	return jsonHash({ 
+		post,
+		async body() {
+			return parseMarkdown(post.body)
+		},
+		async photo() {
+			return post.image ? getAssetURL(post.image) : null;
+		},
+		async readTime() {
+			return readingTime(post.body);
+		},
+		async meta() {
+			return {
+				title: post.title,
+				description: post.excerpt,
+				createdAt: post.created_at,
+				published: post.published,
+				author: `${post.author.first_name} ${post.author.last_name}`,
 			}
-		}, {
-			headers: {
-				"Cache-Control": new CacheControl("swr").toString() 
-			},
-		});    
-	} catch {
-		return redirect("/blog");
-	}
+		}
+	}, {
+		headers: {
+			"cache-control": "max-age=1, s-maxage=1, stale-while-revalidate",
+		},
+	});    
 }
-
 
 export default function Article() {
 	let { body, photo, readTime, meta } = useLoaderData<typeof loader>();
