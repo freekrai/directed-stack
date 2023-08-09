@@ -16,7 +16,7 @@ import Container from '~/components/layout/Container'
 
 import getSeo from '~/seo';
 
-export const config = { runtime: 'edge' };
+//export const config = { runtime: 'edge' };
 
 export const meta: V2_MetaFunction = ({ data, matches }) => {
 	if(!data) return [];

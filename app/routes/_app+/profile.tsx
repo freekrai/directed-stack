@@ -29,7 +29,6 @@ import { getDomainUrl, validateEmail } from '~/utils';
 import * as React from "react";
 
 import { isAuthenticated, getDirectusClient, readMe, updateMe } from "~/auth.server";
-//import { fetchAPI } from '~/services/directusEdge.server';
 
 import { CacheControl } from "~/utils/cache-control.server";
 
