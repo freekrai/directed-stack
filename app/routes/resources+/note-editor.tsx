@@ -53,26 +53,18 @@ export async function action({ request }: DataFunctionArgs) {
 		body: body,
 	}
 
-	const select = {
-		id: true,
-		owner: {
-			select: {
-				username: true,
-			},
-		},
-	}
 	if (id) {
-        await updateOne('notes', id, {
-            title,
-            body
-        });
-        return redirect(`/notes/${id}`);
+	        await updateOne('notes', id, {
+	            title,
+	            body
+	        });
+	        return redirect(`/notes/${id}`);
 	} else {
-        const newNote = await createOne('notes', {
-            title,
-            body
-        });
-        return redirect(`/notes/${newNote.id}`);
+	        const newNote = await createOne('notes', {
+	            title,
+	            body
+	        });
+	        return redirect(`/notes/${newNote.id}`);
 	}
 }
 
