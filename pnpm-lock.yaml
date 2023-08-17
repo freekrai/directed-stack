@@ -80,6 +80,9 @@ dependencies:
   '@radix-ui/react-slot':
     specifier: ^1.0.2
     version: 1.0.2(@types/react@18.2.19)(react@18.2.0)
+  '@radix-ui/react-tabs':
+    specifier: ^1.0.4
+    version: 1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)
   '@radix-ui/react-toast':
     specifier: ^1.1.4
     version: 1.1.4(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)
@@ -148,7 +151,7 @@ dependencies:
     version: 0.1.0(@remix-run/react@1.19.2)(remix@1.16.1)
   remix-utils:
     specifier: ^6.6.0
-    version: 6.6.0(@remix-run/react@1.19.2)(@remix-run/server-runtime@1.19.1)(react@18.2.0)(typescript@5.1.6)(zod@3.21.4)
+    version: 6.6.0(@remix-run/react@1.19.2)(@remix-run/server-runtime@1.19.2)(react@18.2.0)(typescript@5.1.6)(zod@3.21.4)
   tailwind-merge:
     specifier: ^1.14.0
     version: 1.14.0
@@ -2835,6 +2838,34 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@radix-ui/react-tabs@1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-egZfYY/+wRNCflXNHx+dePvnz9FbmssDTJBtgRfDY7e8SE5oIo3Py2eCB1ckAbh1Q7cQ/6yJZThJ++sgbxibog==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.21.0
+      '@radix-ui/primitive': 1.0.1
+      '@radix-ui/react-context': 1.0.1(@types/react@18.2.19)(react@18.2.0)
+      '@radix-ui/react-direction': 1.0.1(@types/react@18.2.19)(react@18.2.0)
+      '@radix-ui/react-id': 1.0.1(@types/react@18.2.19)(react@18.2.0)
+      '@radix-ui/react-presence': 1.0.1(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-roving-focus': 1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0)
+      '@radix-ui/react-use-controllable-state': 1.0.1(@types/react@18.2.19)(react@18.2.0)
+      '@types/react': 18.2.19
+      '@types/react-dom': 18.2.7
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@radix-ui/react-toast@1.1.4(@types/react-dom@18.2.7)(@types/react@18.2.19)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-wf+fc8DOywrpRK3jlPlWVe+ELYGHdKDaaARJZNuUTWyWYq7+ANCFLp4rTjZ/mcGkJJQ/vZ949Zis9xxEpfq9OA==}
     peerDependencies:
@@ -3242,18 +3273,6 @@ packages:
       source-map-support: 0.5.21
     transitivePeerDependencies:
       - supports-color
-
-  /@remix-run/server-runtime@1.19.1:
-    resolution: {integrity: sha512-sRTx/Ibl8HSLGhEr73YTZz3GzO5eZRCusfSJ8MBh1Kq0Mo571W9g4AJ/qJsF3G/wKTKxU2n75MVo0nIfTh4oZQ==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@remix-run/router': 1.7.2
-      '@types/cookie': 0.4.1
-      '@web3-storage/multipart-parser': 1.0.0
-      cookie: 0.4.2
-      set-cookie-parser: 2.6.0
-      source-map: 0.7.4
-    dev: false
 
   /@remix-run/server-runtime@1.19.2:
     resolution: {integrity: sha512-d+oOaQlBPFHPum1nstJCntRgwgi4fzijW51yPCo3ljUxIrjlDjutX2GCQ72Apd6Ffpd11/6nEq+B90EY+Ala9Q==}
@@ -8561,7 +8580,7 @@ packages:
       remix: 1.16.1
     dev: false
 
-  /remix-utils@6.6.0(@remix-run/react@1.19.2)(@remix-run/server-runtime@1.19.1)(react@18.2.0)(typescript@5.1.6)(zod@3.21.4):
+  /remix-utils@6.6.0(@remix-run/react@1.19.2)(@remix-run/server-runtime@1.19.2)(react@18.2.0)(typescript@5.1.6)(zod@3.21.4):
     resolution: {integrity: sha512-4r4ifahU61Aa54m6Yu8B8GTzXyo+9RUzkFZdBNZOErpZ1LUMQ/ng4LeCJX2M6m4obdMjq0ot0pPlnAzeZOSttg==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -8571,7 +8590,7 @@ packages:
       zod: ^3.19.1
     dependencies:
       '@remix-run/react': 1.19.2(react-dom@18.2.0)(react@18.2.0)
-      '@remix-run/server-runtime': 1.19.1
+      '@remix-run/server-runtime': 1.19.2
       intl-parse-accept-language: 1.0.0
       is-ip: 3.1.0
       react: 18.2.0

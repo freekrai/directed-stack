@@ -75,7 +75,6 @@ export function NoteEditor({
 }) {
 	const noteEditorFetcher = useFetcher<typeof action>()
 
-    let [hidePreview, setHidePreview] = React.useState(false)
     const [markup, setMarkup] = React.useState(note?.body || "" );
     
     const handleChange = (newValue: string) => {
@@ -101,7 +100,6 @@ export function NoteEditor({
 	return (
 		<noteEditorFetcher.Form
 			method="post"
-			action="/resources/note-editor"
 			className="flex h-full flex-col gap-y-4 overflow-x-hidden px-10 pb-28 pt-12"
 			{...form.props}
 		>
@@ -120,31 +118,10 @@ export function NoteEditor({
                 <Editor 
                     content={markup}
                     onChange={handleChange}
-                    hidePreview={hidePreview}
-                />
-                <div className="flex-1 mt-2 rounded-md border border-neutral-300 bg-gray-100 p-4">
-                    {hidePreview ? <button
-                        type="button"
-                        name="showModel"
-                        onClick={()=>setHidePreview(false)}
-                        className="ml-5 rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400 disabled:bg-blue-300"
-                    >
-                        <Icon name="eye" />
-                        Show Preview
-                    </button> : 
-                    <button
-                        type="button"
-                        name="showModel"
-                        onClick={()=>setHidePreview(true)}
-                        className="ml-5 rounded bg-green-500 py-2 px-4 text-white hover:bg-green-600 focus:bg-green-400 disabled:bg-green-300"
-                    >
-                        <Icon name="eye-off" />
-                        Hide Preview
-                    </button>}
-                </div>
+                />                
             </div>
 			<ErrorList errors={form.errors} id={form.errorId} />
-			<div className="pt-5">
+			<div className="flex-1 rounded-md border border-blue-600 bg-slate-100 p-4 mt-2">
                 <div className="flex justify-end">
                     <Button
                         variant="destructive"

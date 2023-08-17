@@ -7,7 +7,6 @@ import { NoteEditor, action } from './__note-editor'
 
 export { action }
 
-
 export default function NewNotePage() {
   return (
     <NoteEditor />
