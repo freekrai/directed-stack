@@ -12,8 +12,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  isRouteErrorResponse,
-  ShouldRevalidateFunction,
   useRouteError,
 } from "@remix-run/react";
 
