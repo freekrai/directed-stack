@@ -42,6 +42,7 @@ export async function loader ({request, params}: DataFunctionArgs) {
 	}
 
 	return jsonHash({ 
+		page,
 		async body () {
 			return parseMarkdown(page.body);
 		}, 

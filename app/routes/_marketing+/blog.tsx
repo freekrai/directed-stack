@@ -79,7 +79,7 @@ export async function loader({ request, context }: DataFunctionArgs) {
         pagination.prev = +pagination.page - 1;
     }
     
-    if (page !== 1) meta.title = `Page "${1} of ${pagination.pageCount}`
+    if (page !== 1) meta.title = `Page "${page} of ${pagination.pageCount}`
 	if (term !== "") meta.title = `Search results for "${term}"`
 
 	return defer({ 
