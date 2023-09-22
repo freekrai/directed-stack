@@ -4,8 +4,9 @@ import { flatRoutes } from "remix-flat-routes";
 export default {
   ignoredRouteFiles: ['**/*'],
   serverDependenciesToBundle: [
-    "@directus/sdk",
-    /^marked.*/,
+    "all",
+    //"@directus/sdk",
+    // /^marked.*/,
   ],
   serverModuleFormat: "cjs",
   tailwind: true,
