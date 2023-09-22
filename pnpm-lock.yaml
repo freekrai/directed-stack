@@ -12,8 +12,8 @@ dependencies:
     specifier: ^0.9.0
     version: 0.9.0(@conform-to/dom@0.9.0)(zod@3.22.2)
   '@directus/sdk':
-    specifier: ^12.0.0
-    version: 12.0.0
+    specifier: 11.0.3
+    version: 11.0.3
   '@headlessui/react':
     specifier: ^1.7.17
     version: 1.7.17(react-dom@18.2.0)(react@18.2.0)
@@ -679,8 +679,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: false
 
-  /@directus/sdk@12.0.0:
-    resolution: {integrity: sha512-LDOsfjP0YmPgpnZXDIBzy8H9qiE9AeORZbzPkV+r/w1pWR3QBaz1xQDR1SrnX9BZ+q6HykjS3OJ2MTnXoQlW1Q==}
+  /@directus/sdk@11.0.3:
+    resolution: {integrity: sha512-fHvHFcDhl8AY5quRP4cgLMHTU6F4c4ynmMpXRsi8dnSd38mIvciFyYmOVOh34Wp2N+a1YNYpXPU+NsHkfIheHw==}
     engines: {node: '>=18.0.0'}
     dev: false
 

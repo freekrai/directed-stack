@@ -6,7 +6,7 @@ export default {
   serverDependenciesToBundle: [
     // /^marked.*/,
   ],
-  //serverModuleFormat: "cjs",
+  serverModuleFormat: "cjs",
   tailwind: true,
   routes: async defineRoutes => {
     return flatRoutes('routes', defineRoutes, {
