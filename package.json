@@ -14,7 +14,7 @@
   "dependencies": {
     "@conform-to/react": "^0.9.0",
     "@conform-to/zod": "^0.9.0",
-    "@directus/sdk": "^11.0.3",
+    "@directus/sdk": "^12.0.0",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@markdoc/markdoc": "^0.3.2",
@@ -79,7 +79,7 @@
     "@types/react-dom": "^18.2.7",
     "autoprefixer": "^10.4.16",
     "daisyui": "^3.7.7",
-    "eslint": "^8.49.0",
+    "eslint": "^8.50.0",
     "new-directus-schema-builder-kit": "^1.0.3",
     "npm-run-all": "^4.1.5",
     "reading-time": "^1.5.0",
