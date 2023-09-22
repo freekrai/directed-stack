@@ -19,13 +19,7 @@ import { envSchema } from "~/env.server";
 let env = envSchema.parse(process.env);
 
 export const directus = createDirectus(env.DIRECTUS_URL)
-	//.with( rest() )
-	.with(rest({
-		onRequest: (opts) => {
-		  delete opts.credentials;
-		  return opts;
-		}
-	}))	
+	.with( rest() )
 	.with( graphql() )
 	.with( staticToken(env.DIRECTUS_STATIC_TOKEN) );
 
