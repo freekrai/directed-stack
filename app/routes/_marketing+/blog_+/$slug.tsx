@@ -1,6 +1,6 @@
 import type {
-	LoaderArgs,
-	V2_MetaFunction,
+	DataFunctionArgs,
+	MetaFunction,
 } from "@vercel/remix";
 import { parseISO, format } from 'date-fns';
 import { useLoaderData } from "@remix-run/react";
@@ -8,7 +8,7 @@ import { useLoaderData } from "@remix-run/react";
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 import { readBySlug, getAssetURL } from '~/services/directus.server'
-import { jsonHash } from 'remix-utils';
+import { jsonHash } from '~/utils/trenta/jsonhash';
 import Container from '~/components/layout/Container'
 import { readingTime } from '~/utils';
 
@@ -16,20 +16,20 @@ import getSeo from '~/seo';
 
 //export const config = { runtime: 'edge' };
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
 	if(!data) return [];
 	//let { meta } = data as SerializeFrom<typeof loader>;
-  	const parentData = matches.flatMap((match) => match.data ?? [] );
+  	//const parentData = matches.flatMap((match) => match.data ?? [] );
 	return [
 		...getSeo({
         	title: data.meta.title,
 			description: data.meta.excerpt,
-        	url: `${parentData[0].requestInfo.url}`,
+        	//url: `${parentData[0].requestInfo.url}`,
         }),
 	];
 }
 
-export async function loader({ request, context, params }: LoaderArgs) {
+export async function loader({ request, context, params }: DataFunctionArgs) {
 	if (!params.slug) {
 		throw new Error('params.slug is not defined')
 	}

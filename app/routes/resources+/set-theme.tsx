@@ -1,10 +1,10 @@
-import type { LoaderArgs, ActionArgs } from "@vercel/remix";
+import type { DataFunctionArgs, } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 
 import { getThemeSession } from "~/utils/theme.server";
 import { isTheme } from "~/utils/theme-provider";
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: DataFunctionArgs) => {
   const themeSession = await getThemeSession(request);
   const requestText = await request.text();
   const form = new URLSearchParams(requestText);
@@ -24,4 +24,4 @@ export const action = async ({ request }: ActionArgs) => {
   );
 };
 
-export const loader = ({request}: LoaderArgs) => redirect("/", { status: 404 });
+export const loader = ({request}: DataFunctionArgs) => redirect("/", { status: 404 });

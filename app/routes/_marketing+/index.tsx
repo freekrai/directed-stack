@@ -1,5 +1,5 @@
 import type {
-	V2_MetaFunction,
+	MetaFunction,
 } from '@vercel/remix';
 import { Link } from "@remix-run/react";
 import Container from '~/components/layout/Container'
@@ -9,15 +9,15 @@ import getSeo from '~/seo';
 
 //export const config = { runtime: 'edge' };
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
 	if(!data) return [];
 	//let { meta } = data as SerializeFrom<typeof loader>;
-  const parentData = matches.flatMap((match) => match.data ?? [] );
+  //const parentData = matches.flatMap((match) => match.data ?? [] );
 	return [
 		...getSeo({
           title: data.page.title,
 			    description: data.page.excerpt,
-          url: `${parentData[0].requestInfo.url}`,
+          //url: `${parentData[0].requestInfo.url}`,
         }),
 	  ];
 }

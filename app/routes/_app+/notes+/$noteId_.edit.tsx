@@ -1,12 +1,9 @@
 import type { 
-  ActionArgs, 
-  LoaderArgs, 
+  DataFunctionArgs, 
 } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { 
-  Form, 
-  useLoaderData, 
-  useActionData
+  useLoaderData
 } from "@remix-run/react";
 import { CacheControl } from "~/utils/cache-control.server";
 import { isAuthenticated, getDirectusClient, readOne, updateOne } from "~/auth.server";
@@ -21,7 +18,7 @@ import { NoteEditor, action } from './__note-editor'
 
 export { action }
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: DataFunctionArgs) {
     invariant(params.noteId, "noteId not found");
 
     const userAuthenticated = await isAuthenticated(request, true);

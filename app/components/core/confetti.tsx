@@ -1,5 +1,5 @@
 import { Index as ConfettiShower } from 'confetti-react'
-import { ClientOnly } from 'remix-utils'
+import { ClientOnly } from '~/components/ClientOnly'
 
 /**
  * confetti is a unique random identifier which re-renders the component

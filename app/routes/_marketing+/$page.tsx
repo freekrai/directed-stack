@@ -1,6 +1,6 @@
 import type {
-	LoaderArgs,
-	V2_MetaFunction,
+	DataFunctionArgs,
+	MetaFunction,
 } from "@vercel/remix";
 
 import { useLoaderData } from "@remix-run/react";
@@ -11,27 +11,26 @@ import { parseMarkdown } from "~/utils/md.server";
 
 import { readBySlug } from '~/services/directus.server'
 
-import { jsonHash } from 'remix-utils';
+import { jsonHash } from '~/utils/trenta/jsonhash';
 import Container from '~/components/layout/Container'
 
 import getSeo from '~/seo';
 
 //export const config = { runtime: 'edge' };
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
 	if(!data) return [];
 	//let { meta } = data as SerializeFrom<typeof loader>;
-  	const parentData = matches.flatMap((match) => match.data ?? [] );
+  	//const parentData = matches.flatMap((match) => match.data ?? [] );
 	return [
 		...getSeo({
         	title: data.meta.title,
 			description: '',
-        	url: `${parentData[0].requestInfo.url}`,
         }),
 	  ];
 }
 
-export async function loader ({request, params}: LoaderArgs) {
+export async function loader ({request, params}: DataFunctionArgs) {
 	if (!params.page) {
 		throw new Error('params.slug is not defined')
 	}
@@ -43,6 +42,7 @@ export async function loader ({request, params}: LoaderArgs) {
 	}
 
 	return jsonHash({ 
+		page,
 		async body () {
 			return parseMarkdown(page.body);
 		}, 

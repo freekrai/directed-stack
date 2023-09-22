@@ -1,7 +1,7 @@
 import type {
-    LoaderArgs,
+    DataFunctionArgs,
     HeadersFunction,
-    V2_MetaFunction,
+    MetaFunction,
 } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { Form, Link, useLoaderData, useNavigation } from "@remix-run/react";
@@ -13,15 +13,15 @@ import { CacheControl } from "~/utils/cache-control.server";
 
 import getSeo from '~/seo';
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
 	//if(!data) return [];
 	//let { meta } = data as SerializeFrom<typeof loader>;
-  	const parentData = matches.flatMap((match) => match.data ?? [] );
+  	//const parentData = matches.flatMap((match) => match.data ?? [] );
 	return [
 		...getSeo({
         	title: 'Dashboard',
 			description: '',
-        	url: `${parentData[0].requestInfo.url}`,
+        	//url: `${parentData[0].requestInfo.url}`,
         }),
 	];
 }
@@ -30,7 +30,7 @@ export let headers: HeadersFunction = () => {
     return { "Cache-Control": new CacheControl("swr").toString() };
 };
 
-export async function loader ({request}: LoaderArgs) {
+export async function loader ({request}: DataFunctionArgs) {
     let errors = {};
     try {
         const userAuthenticated = await isAuthenticated(request, true);
