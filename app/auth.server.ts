@@ -88,9 +88,16 @@ export type User = {
 //const directus = createDirectus(env.DIRECTUS_URL).with( authentication() ).with( rest() );
 
 export const directus = createDirectus(env.DIRECTUS_URL) 
-  .with(rest())
+  //.with(rest())
+  .with(rest({
+    onRequest: (opts) => {
+      delete opts.credentials;
+      return opts;
+    }
+  }))
   .with(authentication('cookie', {
-    msRefreshBeforeExpires: 900000,
+    credentials: 'include',
+    msRefreshBeforeExpires: 3600000,
     autoRefresh: true,
   }))
 

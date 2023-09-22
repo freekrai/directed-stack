@@ -18,7 +18,16 @@ import { envSchema } from "~/env.server";
 
 let env = envSchema.parse(process.env);
 
-export const directus = createDirectus(env.DIRECTUS_URL).with( rest() ).with( graphql() ).with( staticToken(env.DIRECTUS_STATIC_TOKEN) );
+export const directus = createDirectus(env.DIRECTUS_URL)
+	//.with( rest() )
+	.with(rest({
+		onRequest: (opts) => {
+		  delete opts.credentials;
+		  return opts;
+		}
+	}))	
+	.with( graphql() )
+	.with( staticToken(env.DIRECTUS_STATIC_TOKEN) );
 
 function serializeSearchParams(obj: any, prefix = ''): string {
 	const str:string[] = [];
@@ -38,16 +47,9 @@ function serializeSearchParams(obj: any, prefix = ''): string {
 	return str.join('&');
 }
 
-
 export async function getDirectusClient() {
 	return directus;
 }
-
-/*
-export async function getDirectusRealtimeClient() {
-	return createDirectus(env.DIRECTUS_URL).with( realtime() ).with( staticToken(env.DIRECTUS_STATIC_TOKEN) );
-}
-*/
 
 export type DirectusQuery = {
   fields: string[];
