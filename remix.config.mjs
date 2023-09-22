@@ -4,19 +4,34 @@ import { flatRoutes } from "remix-flat-routes";
 export default {
   ignoredRouteFiles: ['**/*'],
   serverDependenciesToBundle: [
-    "all",
-    //"@directus/sdk",
-    // /^marked.*/,
+     /^.*/,
+    /^marked.*/,
   ],
   serverModuleFormat: "cjs",
+  serverPlatform: 'node',
   tailwind: true,
-  future: {
-    v2_routeConvention: true,
-    v2_meta: true,
-    v2_errorBoundary: true,
-    v2_normalizeFormMethod: true,
-    v2_headers: true,
+/*
+  browserNodeBuiltinsPolyfill: {
+    modules: {
+      buffer: true, // Provide a JSPM polyfill
+      fs: "empty", // Provide an empty polyfill
+    },
+    globals: {
+      fetch: true,
+      Buffer: true,
+    }
   },
+  serverNodeBuiltinsPolyfill: {
+    modules: {
+      buffer: true, // Provide a JSPM polyfill
+      fs: "empty", // Provide an empty polyfill
+    },
+    globals: {
+      Buffer: true,
+      fetch: true,
+    },
+  },
+*/  
   routes: async defineRoutes => {
     return flatRoutes('routes', defineRoutes, {
       ignoredRouteFiles: [
