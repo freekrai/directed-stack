@@ -4,6 +4,7 @@ import type {
   DataFunctionArgs, 
   MetaFunction 
 } from "@vercel/remix";
+import { json } from '@vercel/remix'
 import {
   Links,
   useLoaderData,
@@ -12,11 +13,9 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useRouteError,
 } from "@remix-run/react";
 
-import ErrorPage from '~/components/errorPage'
-
+import { GeneralErrorBoundary } from '~/components/error-boundary'
 import { CacheControl } from "~/utils/cache-control.server";
 import getSeo from '~/seo'
 
@@ -39,11 +38,10 @@ export const handle = {
   id: 'root',
 }
 
-export const meta: MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [
     getSeo({
       title: 'Directed Stack',
-      url: removeTrailingSlash(`${data.requestInfo.origin}${data.requestInfo.path}`)
     }),
 	]
 }
@@ -72,24 +70,22 @@ export type LoaderData = {
 };
 
 export const loader = async ({ request }: DataFunctionArgs) => {
-    const themeSession = await getThemeSession(request);
+  const themeSession = await getThemeSession(request);
 
-    const url = getDomainUrl(request);
-    const path = new URL(request.url).pathname;
+  const url = getDomainUrl(request);
+  const path = new URL(request.url).pathname;
 
-    const data: LoaderData = {
-      user: await isAuthenticated(request),
-      theme: themeSession.getTheme(),
-      canonical: removeTrailingSlash(`${url}${path}`),
-      requestInfo: {
-        origin: getDomainUrl(request),
-        path: new URL(request.url).pathname,
-      },
-    };
-
-  return data;
+  return json({
+    user: await isAuthenticated(request),
+    theme: themeSession.getTheme(),
+    canonical: removeTrailingSlash(`${url}${path}`),
+    requestInfo: {
+      origin: getDomainUrl(request),
+      path: new URL(request.url).pathname,
+    },
+  });
 };
-export type Loader = typeof loader;
+//export type Loader = typeof loader;
 
 export const headers: HeadersFunction = () => {
   return { "Cache-Control": new CacheControl("swr").toString() };
@@ -139,21 +135,22 @@ export default function AppWithProviders() {
 }
 
 export function ErrorBoundary() {
+	return (
+		<html className="h-full" lang="en">
+      <body className="h-full">
+			  <GeneralErrorBoundary />
+      </body>
+    </html>
+	)
+}
+
+/*
+export function ErrorBoundary() {
   let error = useRouteError();
   let status = '500';
   let message = '';
   let stacktrace;
 
-  //console.log(error);
-
-/*
-{
-    status: 404,
-    statusText: '',
-    internal: false,
-    data: {}
-  }
-*/
   // when true, this is what used to go to `CatchBoundary`
   if ( error.status === 404 ) {
     status = 404;
@@ -202,3 +199,4 @@ function ErrorDocument({
     </html>
   );
 }
+*/

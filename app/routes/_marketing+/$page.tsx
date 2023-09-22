@@ -26,7 +26,6 @@ export const meta: MetaFunction = ({ data, matches }) => {
 		...getSeo({
         	title: data.meta.title,
 			description: '',
-        	//url: `${parentData[0].requestInfo.url}`,
         }),
 	  ];
 }

@@ -95,7 +95,7 @@ export const meta: MetaFunction = ({ data, matches }) => {
 	//let rootModule = matches.find(match => match.route.id === 'root')
 	return [
 		//...(rootModule?.meta ?? [])?.filter(meta => !('title' in meta)),
-		{ title: `My Profile | Get Butters`  },
+		{ title: `My Profile | Directed Stack`  },
 		{ description: 'Welcome to your Dashboard'},
 	];
 }	
