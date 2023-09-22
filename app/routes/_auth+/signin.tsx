@@ -1,6 +1,6 @@
 import type {
-  ActionFunction,
-  V2_MetaFunction,
+  DataFunctionArgs,
+  MetaFunction,
 } from "@vercel/remix";
 import { json } from "@vercel/remix";
 import { 
@@ -30,18 +30,18 @@ const LoginFormSchema = z.object({
 	remember: checkboxSchema(),
 })
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
 	//let { meta } = data as SerializeFrom<typeof loader>;
-  	const parentData = matches.flatMap((match) => match.data ?? [] );
+  	//const parentData = matches.flatMap((match) => match.data ?? [] );
 	return [
 		...getSeo({
         	title: 'Login',
-        	url: `${parentData[0].requestInfo.url}`,
+        	//url: `${parentData[0].requestInfo.url}`,
         }),
 	];
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export async function action({ request }: DataFunctionArgs) {
     const formData = await request.formData();
 
     const submission = parse(formData, {

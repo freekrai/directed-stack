@@ -1,11 +1,11 @@
-import type { LoaderArgs } from "@vercel/remix";
+import type { DataFunctionArgs } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
-import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 
 import { isAuthenticated, getDirectusClient, readByQuery } from "~/auth.server";
 import { CacheControl } from "~/utils/cache-control.server";
 
-export async function loader ({request}: LoaderArgs) {
+export async function loader ({request}: DataFunctionArgs) {
     let errors = {};
     const userAuthenticated = await isAuthenticated(request, true);
     if (!userAuthenticated) {

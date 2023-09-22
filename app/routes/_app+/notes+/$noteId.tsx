@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from "@vercel/remix";
+import type { DataFunctionArgs, } from "@vercel/remix";
 import { redirect } from "@vercel/remix";
 import { 
   Link, 
@@ -19,13 +19,13 @@ import { Icon} from '~/components/icons'
 import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 
-import { jsonHash } from 'remix-utils'
+import { jsonHash } from '~/utils/trenta/jsonhash'
 
 import {
   cn, useDoubleCheck
 } from '~/utils'
 
-export async function loader({ request, params }: LoaderArgs) {
+export async function loader({ request, params }: DataFunctionArgs) {
     invariant(params.noteId, "noteId not found");
 
     const userAuthenticated = await isAuthenticated(request, true);
@@ -59,7 +59,7 @@ export const handle = {
 	id: 'dashboard',
 }   
 
-export async function action({ request, params }: ActionArgs) {
+export async function action({ request, params }: DataFunctionArgs) {
   invariant(params.noteId, "noteId not found");
 
   const userAuthenticated = await isAuthenticated(request, true);

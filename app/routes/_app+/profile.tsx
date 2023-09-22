@@ -1,8 +1,7 @@
 import type {
-    LoaderArgs,
-    ActionArgs,
+    DataFunctionArgs,
     HeadersFunction,
-    V2_MetaFunction,
+    MetaFunction,
 } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { 
@@ -50,7 +49,7 @@ export let headers: HeadersFunction = () => {
     return { "Cache-Control": new CacheControl("swr").toString() };
 };
 
-export async function loader ({request}: LoaderArgs) {
+export async function loader ({request}: DataFunctionArgs) {
     let errors = {};
     try {
         const userAuthenticated = await isAuthenticated(request, true);
@@ -92,7 +91,7 @@ export const handle = {
 	id: 'dashboard',
 }   
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
 	//let rootModule = matches.find(match => match.route.id === 'root')
 	return [
 		//...(rootModule?.meta ?? [])?.filter(meta => !('title' in meta)),
@@ -101,7 +100,7 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
 	];
 }	
 
-export async function action({ request, params }: ActionArgs) {
+export async function action({ request, params }: DataFunctionArgs) {
     const userAuthenticated = await isAuthenticated(request, true);
     if (!userAuthenticated) {
         return redirect("/signin");

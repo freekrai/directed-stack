@@ -1,6 +1,6 @@
 import type {
-  ActionFunction,
-  V2_MetaFunction,
+  DataFunctionArgs,
+  MetaFunction,
 } from "@vercel/remix";
 import { json } from "@vercel/remix";
 import { 
@@ -36,18 +36,18 @@ const signupFormSchema = z.object({
   path: ['confirmPassword'],
 });
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
 	//let { meta } = data as SerializeFrom<typeof loader>;
-  	const parentData = matches.flatMap((match) => match.data ?? [] );
+  	//const parentData = matches.flatMap((match) => match.data ?? [] );
 	return [
 		...getSeo({
         	title: 'Sign Up',
-        	url: `${parentData[0].requestInfo.url}`,
+        	//url: `${parentData[0].requestInfo.url}`,
         }),
 	];
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export async function action({ request }: DataFunctionArgs) {
     invariant(process.env.DIRECTUS_USER_ROLE, "No user role specified");
 
     const formData = await request.formData();

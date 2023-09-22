@@ -1,6 +1,6 @@
 import type {
-	LoaderArgs,
-	V2_MetaFunction,
+	DataFunctionArgs,
+	MetaFunction,
 } from "@vercel/remix";
 
 import { defer } from "@vercel/remix";
@@ -19,20 +19,20 @@ import Container from '~/components/layout/Container'
 
 import getSeo from '~/seo';
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
 	if(!data) return [];
 	//let { meta } = data as SerializeFrom<typeof loader>;
-  	const parentData = matches.flatMap((match) => match.data ?? [] );
+  	//const parentData = matches.flatMap((match) => match.data ?? [] );
 	return [
 		...getSeo({
         	title: data.meta.title,
 			description: '',
-        	url: `${parentData[0].requestInfo.url}`,
+        	//url: `${parentData[0].requestInfo.url}`,
         }),
 	  ];
 }
 
-export async function loader({ request, context }: LoaderArgs) {
+export async function loader({ request, context }: DataFunctionArgs) {
 	let url = new URL(request.url);
 
 	let term = url.searchParams.get("q") ?? "";

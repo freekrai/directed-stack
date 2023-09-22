@@ -1,4 +1,4 @@
-import type { ActionArgs } from "@vercel/remix";
+import type { DataFunctionArgs } from "@vercel/remix";
 import { json, redirect } from "@vercel/remix";
 import { Form, useActionData } from "@remix-run/react";
 import * as React from "react";

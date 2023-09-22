@@ -3,15 +3,11 @@ import { flatRoutes } from "remix-flat-routes";
 /** @type {import('@remix-run/dev').AppConfig} */
 export default {
   ignoredRouteFiles: ['**/*'],
-  serverDependenciesToBundle: [
-    /^marked.*/,
-  ],
+  //serverDependenciesToBundle: [
+//    /^marked.*/,
+  //],
   //serverDependenciesToBundle: "all",
-  //serverMainFields: ["browser", "module", "main"],
   serverModuleFormat: "cjs",
-  //serverModuleFormat: 'esm',
-  //serverPlatform: "neutral", // default value, can be removed
-  postcss: true,
   tailwind: true,
   future: {
     v2_routeConvention: true,

@@ -1,10 +1,10 @@
 // learn more: https://fly.io/docs/reference/configuration/#services-http_checks
-import type { LoaderArgs } from "@vercel/remix";
+import type { DataFunctionArgs } from "@vercel/remix";
 import { envSchema } from "~/env.server";
 
 let env = envSchema.parse(process.env);
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: DataFunctionArgs) => {
   const host = request.headers.get("X-Forwarded-Host") ?? request.headers.get("host");
 
   try {

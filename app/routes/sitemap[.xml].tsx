@@ -1,10 +1,10 @@
-import type {LoaderArgs} from '@vercel/remix'
+import type {DataFunctionArgs} from '@vercel/remix'
 import { createSitemap } from '~/utils/sitemap.server';
 import {getDirectusClient, readByQuery} from '~/services/directus.server';
 import { CacheControl } from "~/utils/cache-control.server";
 import {getDomainUrl} from '~/utils/'
 
-export const loader = async ({request}: LoaderArgs) => {
+export const loader = async ({request}: DataFunctionArgs) => {
 
     const directus = await getDirectusClient();
 

@@ -3,7 +3,7 @@
     It has no UI because we handle that in the other folders under _app+
 */
 import type {
-    LoaderArgs,
+    DataFunctionArgs,
 } from "@vercel/remix";
 import { 
     json, 
@@ -19,7 +19,7 @@ import {
 import { isAuthenticated } from "~/auth.server";
 import { cn } from '~/utils';
 
-export async function loader({ request, context }: LoaderArgs) {
+export async function loader({ request, context }: DataFunctionArgs) {
     const userAuthenticated = await isAuthenticated(request, true);
     if (!userAuthenticated) {
         return redirect("/signout");

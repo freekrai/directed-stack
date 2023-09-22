@@ -1,4 +1,4 @@
-import type {LoaderArgs} from '@vercel/remix'
+import type {DataFunctionArgs} from '@vercel/remix'
 import { add, parseISO, format } from 'date-fns';
 import {getDomainUrl} from '~/utils/'
 
@@ -8,7 +8,7 @@ function cdata(s: string) {
   return `<![CDATA[${s}]]>`
 }
 
-export const loader = async ({request}: LoaderArgs) => {
+export const loader = async ({request}: DataFunctionArgs) => {
     const blogUrl = `${getDomainUrl(request)}/blog`
 
     const posts = await readByQuery("posts", {

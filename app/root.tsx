@@ -1,8 +1,8 @@
 import type { 
   HeadersFunction, 
   LinksFunction, 
-  LoaderArgs, 
-  V2_MetaFunction 
+  DataFunctionArgs, 
+  MetaFunction 
 } from "@vercel/remix";
 import {
   Links,
@@ -39,7 +39,7 @@ export const handle = {
   id: 'root',
 }
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
 	return [
     getSeo({
       title: 'Directed Stack',
@@ -71,7 +71,7 @@ export type LoaderData = {
   } | null;
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: DataFunctionArgs) => {
     const themeSession = await getThemeSession(request);
 
     const url = getDomainUrl(request);
