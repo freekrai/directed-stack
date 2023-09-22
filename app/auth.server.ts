@@ -88,16 +88,10 @@ export type User = {
 //const directus = createDirectus(env.DIRECTUS_URL).with( authentication() ).with( rest() );
 
 export const directus = createDirectus(env.DIRECTUS_URL) 
-  //with(rest())
-  .with( authentication('json', {
-    //msRefreshBeforeExpires: 3600000,
+  .with(rest())
+  .with(authentication('cookie', {
+    msRefreshBeforeExpires: 3600000,
     autoRefresh: true,
-  })).with(rest({
-    onRequest: (opts) => {
-      console.log("opts", opts);
-      //delete opts.credentials;
-      return opts;
-    }
   }))
 
 export async function getDirectusClient({
@@ -110,7 +104,7 @@ export async function getDirectusClient({
   token?: string;
 }) {
   if (email && password) {
-    await directus.login(email, password, { mode: 'json'});
+    await directus.login(email, password, { mode: 'cookie'});
   } else if (token) {
     await directus.setToken(token);
   }
@@ -169,7 +163,7 @@ export async function login({
   password: string;
 }) {
   try {
-    const user = await directus.login(email, password, { mode: 'json' });
+    const user = await directus.login(email, password, { mode: 'cookie' });
     if( !user ) throw new Error("Invalid email or password");
     return user;
   } catch(e){

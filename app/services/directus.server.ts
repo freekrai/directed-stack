@@ -19,19 +19,9 @@ import { envSchema } from "~/env.server";
 let env = envSchema.parse(process.env);
 
 export const directus = createDirectus(env.DIRECTUS_URL)
-	//.with( rest() )
-	//.with( graphql() )
-	.with( staticToken(env.DIRECTUS_STATIC_TOKEN) )
-	.with(rest({
-		//credentials: 'include',
-		onRequest: (opts) => {
-		  console.log("opts", opts);
-		  //delete opts.credentials;
-		  return opts;
-		}
-	}))
-	.with(graphql() )
-
+	.with( rest() )
+	.with( graphql() )
+	.with( staticToken(env.DIRECTUS_STATIC_TOKEN) );
 
 function serializeSearchParams(obj: any, prefix = ''): string {
 	const str:string[] = [];
