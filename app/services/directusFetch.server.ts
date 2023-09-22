@@ -1,3 +1,12 @@
+//import { formData } from "zod-form-data";
+
+
+/**
+ * Edge-side Directus utilities. By having these in a separate file from the
+ * utilities we use on the client side, we are able to tree-shake (remove)
+ * code that is not used on the client side.
+ * To take it a step further, while directus-server is nodejs only, this file is designed for the edge runtime.
+ */
 function serializeSearchParams(obj: any, prefix = ''): string {
 	const str:string[] = [];
 	let p;
@@ -16,14 +25,43 @@ function serializeSearchParams(obj: any, prefix = ''): string {
 	return str.join('&');
 }
 
+/*
+  service can be:
+  - stripe
+  - paypal
+  - pageview
+*/
+export const trackMetrics = async ({service, key, value}: {service: string, key: string, value: any}) => {
+    const res = await postAPI('/metrics', {
+	    service,
+	    timestamp: new Date(),
+	    key,
+	    value,	    
+    });
+//await clearCache()
+  return res;
+}
+/*
+export const updateViews = async (id, views) => {
+  const directus = await getDirectusClient();
+
+  const posts = await directus.items('posts');
+
+  const res = await posts.updateOne(id, {
+    views: views,
+  });
+  //await clearCache()
+  return res;
+}
+*/
 /**
  * Get full Directus URL from path
  * @param {string} path Path of the URL
  * @returns {string} Full Strapi URL
  */
 export function getDirectusURL(path = "") {
-	return `${process.env.DIRECTUS_URL || "http://localhost:6055"}${path}`
-  }
+  return `${process.env.DIRECTUS_URL || "http://localhost:6055"}${path}`
+}
 
 /*
  * GraphQL-oriented fetch client....
@@ -87,12 +125,19 @@ export const directusFetch = async ({ query, variables }: {query: any, variables
       const post = data.articles_by_id || [
 */
 
+/*
+export function getAssetURL(id) {
+    if (!id) return null;
+    return `${DIRECTUS_URL}/assets/${id}`;
+}
+*/
 // clear the directus cache
 export const clearCache = async () => {
   const url = `${process.env.DIRECTUS_URL}/utils/cache/clear?access_token=${process.env.DIRECTUS_STATIC_TOKEN}`
-  return fetch(url, {
+  const response = await fetch(url, {
     method: 'POST',
   });
+  return true;
 }
 
 /**
@@ -137,7 +182,31 @@ export async function postAPI(path: string, urlParamsObject: {}, options = {}, p
     const data = await response.json()
     return data
 }
+ 
+
+export async function uploadFile(payload:any){
+  // Build request URL
+  const requestUrl = `${getDirectusURL(`/files`)}`
+
+  // Trigger API call
+  const response = await fetch(requestUrl, {
+    method: 'POST',
+    body: payload,
+    headers: {
+      //"Content-Type": "application/json",
+      'Authorization': `Bearer ${process.env.DIRECTUS_STATIC_TOKEN}`,
+    },
+  })
   
+  // Handle response
+  if (!response.ok) {
+    console.error("ERROR >>> ", response.statusText)
+    throw new Error(`An error occured please try again`)
+  }
+  const data = await response.json();
+  return data
+}
+
 /**
  * Helper to make PUT requests to Directus API endpoints
  * @param {string} path Path of the API route
@@ -179,7 +248,7 @@ export async function patchAPI(path: string, urlParamsObject: {}, options = {}, 
     }
     const data = await response.json()
     return data
-}  
+  }  
 
   /**
  * Helper to make PUT requests to Directus API endpoints
@@ -224,87 +293,97 @@ export async function putAPI(path: string, urlParamsObject: {}, options = {}, pa
 	return data
 }
 
-export async function userLogin(email: string, password: string) {
-    const urlParamsObject = {};
-    const options = {};
+export type AuthenticationMode = 'json' | 'cookie';
+export interface LoginOptions {
+	otp?: string;
+	mode?: AuthenticationMode;
+}
 
-    const payload = {
-        email,
-        password,
-    }
+export async function userLogin({
+  email, 
+  password, 
+  options = {}
+}: {
+  email: string, 
+  password: string, 
+  options: LoginOptions
+}) {
+  const urlParamsObject = {};
+  const opts = {};
 
-    // Merge default and user options
-    const mergedOptions = {
-        method: 'POST',
-        body: JSON.stringify({
-            "data": payload
-        }),  
-        headers: {
-            "Content-Type": "application/json",
-            //'Authorization': `Bearer ${process.env.DIRECTUS_STATIC_TOKEN}`,
-        },
-        ...options,
-    }
+  const data: Record<string, string> = { email, password };
+  if ('otp' in options) data['otp'] = options.otp;
+  if ('mode' in options) data['mode'] = options.mode;
 
-    const path = '/auth/login';
-    let ppath = path;
-    
-    if( !path.startsWith("/") ){
-        ppath = '/' + path;
-    }
+  // Merge default and user options
+  const mergedOptions = {
+    method: 'POST',
+    body: JSON.stringify({
+      data
+    }),  
+    headers: {
+      "Content-Type": "application/json",
+      //'Authorization': `Bearer ${process.env.DIRECTUS_STATIC_TOKEN}`,
+    },
+    ...opts,
+  }
+  
+  const path = '/auth/login';
+  let ppath = path;
+  if( !path.startsWith("/") ){
+    ppath = '/' + path;
+  }
 
-    // Build request URL
-    const queryString = serializeSearchParams(urlParamsObject)
-    const requestUrl = `${getDirectusURL(`${ppath}${queryString ? `?${queryString}` : ""}`)}`
-    //console.log(requestUrl);
-
-    // Trigger API call
-    const response = await fetch(requestUrl, mergedOptions)
-
-    // Handle response
-    if (!response.ok) {
-        console.error(response.statusText)
-        throw new Error(`An error occured please try again`)
-    }
-    const data = await response.json()
-    return data
+  // Build request URL
+  const queryString = serializeSearchParams(urlParamsObject)
+  const requestUrl = `${getDirectusURL(`${ppath}${queryString ? `?${queryString}` : ""}`)}`
+  //console.log(requestUrl);
+  
+  // Trigger API call
+  const response = await fetch(requestUrl, mergedOptions)
+  
+  // Handle response
+  if (!response.ok) {
+    console.error(response.statusText)
+    throw new Error(`An error occured please try again`)
+  }
+  return await response.json()
 }
 
 export async function getMe(token: string) {
-    const urlParamsObject = {};
-    const options = {};
+  const urlParamsObject = {};
+  const options = {};
 
-    // Merge default and user options
-    const mergedOptions = {
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${token}`,
-        },
-        ...options,
-    }
+  // Merge default and user options
+  const mergedOptions = {
+    headers: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${token}`,
+    },
+    ...options,
+  }
+  
+  const path = '/auth/signin';
+  let ppath = path;
+  if( !path.startsWith("/") ){
+    ppath = '/' + path;
+  }
 
-    const path = '/auth/login';
-    let ppath = path;
-    if( !path.startsWith("/") ){
-        ppath = '/' + path;
-    }
-
-    // Build request URL
-    const queryString = serializeSearchParams(urlParamsObject)
-    const requestUrl = `${getDirectusURL(`${ppath}${queryString ? `?${queryString}` : ""}`)}`
-    //console.log(requestUrl);
-
-    // Trigger API call
-    const response = await fetch(requestUrl, mergedOptions)
-
-    // Handle response
-    if (!response.ok) {
-        console.error(response.statusText)
-        throw new Error(`An error occured please try again`)
-    }
-
-    const data = await response.json()
-    return data
+  // Build request URL
+  const queryString = serializeSearchParams(urlParamsObject)
+  const requestUrl = `${getDirectusURL(`${ppath}${queryString ? `?${queryString}` : ""}`)}`
+  //console.log(requestUrl);
+  
+  // Trigger API call
+  const response = await fetch(requestUrl, mergedOptions)
+  
+  // Handle response
+  if (!response.ok) {
+    console.error(response.statusText)
+    throw new Error(`An error occured please try again`)
+  }
+  const data = await response.json()
+  return data
 }
 
 /**
@@ -315,82 +394,80 @@ export async function getMe(token: string) {
  * @returns Parsed API call response
  */
 export async function fetchAPI(path: string, urlParamsObject = {}, options = {}) {
-    // Merge default and user options
-    const mergedOptions = {
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${process.env.DIRECTUS_STATIC_TOKEN}`,
-        },
-        ...options,
-    }
-
+  // Merge default and user options
+  const mergedOptions = {
+    headers: {
+    "Content-Type": "application/json",
+    'Authorization': `Bearer ${process.env.DIRECTUS_STATIC_TOKEN}`,
+    },
+    ...options,
+  }
+  
     let ppath = path;
     if( !path.startsWith("/") ){
         ppath = '/' + path;
     }
 
-    // Build request URL
-    const queryString = serializeSearchParams(urlParamsObject)
-    const requestUrl = `${getDirectusURL(`/items${ppath}${queryString ? `?${queryString}` : ""}`)}`
-    //console.log(requestUrl);
-
-    // Trigger API call
-    const response = await fetch(requestUrl, mergedOptions)
-
-    // Handle response
-    if (!response.ok) {
-        console.error(response.statusText)
-        throw new Error(`An error occured please try again`)
-    }
-
-    const data = await response.json()
-    return data
+  // Build request URL
+  const queryString = serializeSearchParams(urlParamsObject)
+  const requestUrl = `${getDirectusURL(`/items${ppath}${queryString ? `?${queryString}` : ""}`)}`
+  //console.log(requestUrl);
+  
+  // Trigger API call
+  const response = await fetch(requestUrl, mergedOptions)
+  
+  // Handle response
+  if (!response.ok) {
+    console.error(response.statusText)
+    throw new Error(`An error occured please try again`)
+  }
+  const data = await response.json()
+  return data
 }
 
 export function getAssetURL(image: any, urlParamsObject = {} ) {
-    if (!image) return null;
+  if (!image) return null;
 
-    let id = image;
-    if ( typeof image === 'object' ) { 
-        id = image.id;
-    }
-
-    if (!id) return null;
-    let queryString = serializeSearchParams(urlParamsObject)
-    return `${process.env.DIRECTUS_URL}/assets/${id}${queryString ? `?${queryString}` : ""}`;
+  let id = image;
+  if ( typeof image === 'object' ) { 
+    id = image.id;
+  }
+  if (!id) return null;
+  let queryString = serializeSearchParams(urlParamsObject)
+  return `${process.env.DIRECTUS_URL}/assets/${id}${queryString ? `?${queryString}` : ""}`;
 }
 
 
 export const filterDataToSingleItem = (data = []) => {
-    if (!Array.isArray(data)) {
-        return data;
-    }
+if (!Array.isArray(data)) {
+  return data;
+}
 
-    if (data.length === 1) {
-        return data[0];
-    }
-    return data[0];
+if (data.length === 1) {
+  return data[0];
+}
+return data[0];
 }
 
 
 interface QueryOptions {
-    access_token?: string;
-    filter?: DeepParam;
-    fields?: string | string[];
-    sort?: string | string[];
-    search?: string;
-    limit?: number;
-    offset?: number;
-    page?: number;
-    aggregate?: Record<string, string>;
-    deep?: DeepParam;
-    alias?: Record<string, string>;
-    export?: "json" | "csv" | "xml";
-    meta?: "total_count" | "filter_count" | "*";
+  access_token?: string;
+  filter?: DeepParam;
+  fields?: string | string[];
+  sort?: string | string[];
+  search?: string;
+  limit?: number;
+  offset?: number;
+  page?: number;
+  aggregate?: Record<string, string>;
+  deep?: DeepParam;
+  alias?: Record<string, string>;
+  export?: "json" | "csv" | "xml";
+  meta?: "total_count" | "filter_count" | "*";
 }
 
 interface DeepParam {
-    [key: string]: string | number | DeepParam;
+  [key: string]: string | number | DeepParam;
 }
 
 type SimpleParam = typeof simpleParams[number];

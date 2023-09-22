@@ -10,7 +10,7 @@ import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 
 import { readBySlug } from '~/services/directus.server'
-
+import { fetchAPI, filterDataToSingleItem } from "~/services/directusFetch.server";
 import { jsonHash } from '~/utils/trenta/jsonhash';
 import Container from '~/components/layout/Container'
 
@@ -34,7 +34,27 @@ export async function loader ({request, params}: DataFunctionArgs) {
 	if (!params.page) {
 		throw new Error('params.slug is not defined')
 	}
-
+/*
+	const data = await fetchAPI('/pages', {
+		filter: {
+			"_and": [
+				{
+					status: {
+						'_eq': 'published'
+					},
+				},
+				{
+					slug: {
+						_eq: params.page,
+					},
+				}
+			]
+		},
+		limit: 1
+	})
+	
+	const page = filterDataToSingleItem(data.data);
+*/
 	const page = await readBySlug("pages", params.page);
 
 	if (!page) {
