@@ -10,7 +10,7 @@ import { MarkdownView } from "~/components/markdown";
 import { parseMarkdown } from "~/utils/md.server";
 
 import { readBySlug } from '~/services/directus.server'
-import { fetchAPI, filterDataToSingleItem } from "~/services/directusFetch.server";
+//import { fetchAPI, filterDataToSingleItem } from "~/services/directusFetch.server";
 import { jsonHash } from '~/utils/trenta/jsonhash';
 import Container from '~/components/layout/Container'
 

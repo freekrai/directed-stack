@@ -46,7 +46,7 @@ export async function action({ request }: DataFunctionArgs) {
 
     const submission = parse(formData, {
       schema: LoginFormSchema,
-      acceptMultipleErrors: () => true,
+      //acceptMultipleErrors: () => true,
     })
   
     if (submission.intent !== 'submit') {
