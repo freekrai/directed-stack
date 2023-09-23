@@ -15,6 +15,7 @@ import { readingTime } from '~/utils';
 import getSeo from '~/seo';
 
 //export const config = { runtime: 'edge' };
+export const config = { runtime: 'nodejs' };
 
 export const meta: MetaFunction = ({ data, matches }) => {
 	if(!data) return [];
